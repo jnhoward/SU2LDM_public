@@ -14,6 +14,13 @@ TIME  = False  # Turn off printing time statements by default
 PLOT  = False  # Turn off plotting by default
 Ngen  = 1      # Number of generations = 1
 
+#################################
+##
+##  How to run from command line:
+##  $ python preScan.py
+##
+#################################
+
 def preScan(DEBUG=False):
  
     #------------------------#
@@ -85,5 +92,5 @@ def preScan(DEBUG=False):
         print("Matrices stored in: ", filename)
 
     
-if __name__ == "__main__":
+if __name__ == "__main__":   
     preScan()
