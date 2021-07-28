@@ -1,21 +1,21 @@
 import numpy as np
 import time
-import itertools
+#import itertools
 import os.path
 from os import path
 
-#-- Add utilityFunctions/ to easily use utility .py files --#
+#-- Add utilityFunctions/ to path to easily use utility .py files --#
 import sys
 sys.path.append("utilityFunctions/")
 
+#-- Define default settings --#
 DEBUG = False  # Turn off DEBUG statements by default
-TIME  = False  # Turn off printing time statements
-PLOT  = False  # Turn off plotting
+TIME  = False  # Turn off printing time statements by default
+PLOT  = False  # Turn off plotting by default
+Ngen  = 1      # Number of generations = 1
 
-# Ngen = 1 # Hyper parameter
-
-def preScan(Ngen=1, DEBUG=False):
-    
+def preScan(DEBUG=False):
+ 
     #------------------------#
     #-- Calculate matrices --#
     #------------------------#
@@ -25,8 +25,7 @@ def preScan(Ngen=1, DEBUG=False):
     else:
         start_preTime = time.process_time()
         
-        #-- Calculate A and X --#
-        
+        #-- Calculate A and X matrices --#        
         start = time.process_time()
         from calcMatrices import calcXs, calcA
         X = calcXs(Ngen, DEBUG)
@@ -40,16 +39,16 @@ def preScan(Ngen=1, DEBUG=False):
             print("")
 
         #-- Calculate F1Hat and F2Hat and save to file--#
-        
+      
         # Here we only calculate the part which only depends on Ngen (through X and A defs)
         # F1Matrix and F2Matrix with appropriate factors will be calculated later
-        DEBUG = False
         start = time.process_time()
         from calcF1F2 import calcF1F2HatMatrices
         F1HatMatrix, F2HatMatrix = calcF1F2HatMatrices(X, A, DEBUG)
         end   = time.process_time()
         
         if (DEBUG):
+            print("------------------------------------------")
             print("F1HatMatrix Shape: ",F1HatMatrix.shape())
             print("F2HatMatrix Shape: ",F2HatMatrix.shape())
             print("")
@@ -61,7 +60,6 @@ def preScan(Ngen=1, DEBUG=False):
             print("")
 
         #-- Transform to definite DM masses --# 
-
         start = time.process_time()
         from convertToDMBasis import convertToDMBasis
         F1HatDMchargeBasisMatrix, F2HatDMchargeBasisMatrix = convertToDMBasis(F1HatMatrix, F2HatMatrix, DEBUG)
@@ -81,11 +79,11 @@ def preScan(Ngen=1, DEBUG=False):
             
             print("Pre parameter scan time: ", end_preTime - start_preTime)
             print("") 
-
+            
+        print("------------------------------------------")
         print("Prescan finished successfully!")
         print("Matrices stored in: ", filename)
 
     
 if __name__ == "__main__":
     preScan()
-    
