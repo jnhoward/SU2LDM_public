@@ -1,6 +1,5 @@
 import numpy as np
 import time
-#import itertools
 import os.path
 from os import path
 
