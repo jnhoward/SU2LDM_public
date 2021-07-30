@@ -49,7 +49,7 @@ def preScan(DEBUG=False):
         # Here we only calculate the part which only depends on Ngen (through X and A defs)
         # F1Matrix and F2Matrix with appropriate factors will be calculated later
         start = time.process_time()
-        from calcF1F2 import calcF1F2HatMatrices
+        from calcF1F2hat import calcF1F2HatMatrices
         F1HatMatrix, F2HatMatrix = calcF1F2HatMatrices(X, A, DEBUG)
         end   = time.process_time()
         

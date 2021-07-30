@@ -2,6 +2,12 @@ import numpy as np
 from scipy.linalg import block_diag
 import itertools
 
+#####################################################
+##
+## Calculate F1 and F2 hat matrices assuming Ngen=1
+##
+#####################################################
+
 #-- Define F1 function --#
 def F1Hat(a, b, c, d, X):
 

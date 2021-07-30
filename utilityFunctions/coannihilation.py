@@ -3,6 +3,12 @@ import itertools
 
 from crossSection import calcCrossSection
 
+#############################
+##
+## Calculate coannihilation
+##
+#############################
+
 #-- Calculate sigma_ij (2D array) (assuming v=0) --#
 def calcSigma_ij(M2, F1Mat, F2Mat, aeff=True, DEBUG=True):
     # Calculates DM_i DM_j -> SM SM
@@ -10,12 +16,12 @@ def calcSigma_ij(M2, F1Mat, F2Mat, aeff=True, DEBUG=True):
 
     n = 15 # Number of DM + SM particles, purely for notational convenience
     sig = np.zeros((n, n), dtype=complex)
-
-    DMlist = [5,6,7,8,9,10,11,12]
+    
+    DMlist = [5,6,7,8,9,10,11,12] # List of DM pions
     allDM = itertools.product(DMlist, DMlist) 
-    # Note more efficient way if we account for the ij reaction symmetry <-- Maybe do this later
+    # Note more efficient way if we account for the ij reaction symmetry <-- Maybe do this later #?
 
-    SMlist = [1,2,3,4,13,14] #Ignoring eta' for now
+    SMlist = [1,2,3,4,13,14] # List of SM pions, ignoring eta'
     allSM = itertools.product(SMlist, SMlist)
 
     total = itertools.product(allDM, allSM) # Need this step because nesting loops over itertools doesn't work
@@ -64,16 +70,4 @@ def calcaEff(sigma, mDMarr, g, x, DEBUG=True):
         sum += sigma[i,j]*g[l]*g[k]*(1+delta[l])**(3./2.)*(1+delta[k])**(3./2.)*np.exp(-x*(delta[l] + delta[k]))
        
     return sum*(1./geff2)
-
-# def calcSigmaAv(M2, F1DMchargeBasisMatrix, F2DMchargeBasisMatrix, x, gArr, DEBUG=True):
-#     #-- Define mass array of DM particle (mDMarr) --#
-#     mDMarr = M2[5:13]
-
-#     #-- Calculate sigma matrix --#
-#     sigij = calcSigma_ij(M2, F1DMchargeBasisMatrix, F2DMchargeBasisMatrix, aeff="True")
-
-#     #-- Calculate aeff --#
-#     aeff = calcaEff(sigij, gArr, mDMarr, x)
-    
-#     return aeff
     

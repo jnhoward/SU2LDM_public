@@ -1,6 +1,12 @@
 import numpy as np
 from scipy.linalg import block_diag
 
+####################################################################
+##
+## Calculate X and A matrices needed for cross section calculation
+##
+####################################################################
+
 #-- Check that Xa's satisfy normalization condition --#
 def normalityCheck(X):
     # X is an n x n numpy ndarray

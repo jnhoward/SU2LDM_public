@@ -8,28 +8,37 @@ from scipy.optimize import root
 from scipy.special import zeta
 from scipy.special import kn
 
-# Constants
+######################################
+##
+## Calculates the relic DM abundance
+##
+######################################
 
-c     = 299792.458       # in km/s
-gamma = 0.1924500897298753 # Collapse factor
-GCF   = 6.70883e-39      # Gravitational constant in GeV^-2
-mPL   = GCF**-0.5        # Planck mass in GeV
-v     = 174              # Higgs vev
-csp   = 0.35443          # sphaleron conversion factor
-GF    = 1.1663787e-5     # Fermi constant in GeV^-2
+#-- Constants --#
+c     = 299792.458         # Speed of light in km/s
+gamma = 0.1924500897298753 # Collapse factor #?
+GCF   = 6.70883e-39        # Gravitational constant in GeV^-2
+mPL   = GCF**-0.5          # Planck mass in GeV
+v     = 174                # Higgs vev
+csp   = 0.35443            # Sphaleron conversion factor
+GF    = 1.1663787e-5       # Fermi constant in GeV^-2
 
-# Conversion factors
-cm_in_invkeV = 5.067730938543699e7       # 1cm in keV^-1
-GeV_in_g     = 1.782661907e-24
-Mpc_in_cm    = 3.085677581e24
-year_in_s    = 3.168808781402895e-8
-GeV_in_invs  = cm_in_invkeV * c * 1.e11
+#-- Conversion factors --#
+cm_in_invkeV = 5.067730938543699e7       # cm   in 1 keV^-1
+GeV_in_g     = 1.782661907e-24           # GeV  in 1 g #?
+Mpc_in_cm    = 3.085677581e24            # Mpc  in 1 cm
+year_in_s    = 3.168808781402895e-8      # year in 1 s
+GeV_in_invs  = cm_in_invkeV * c * 1.e11  # GeV  in 1 s^-1
 
 
-#-------------------------------------#
-#    g*(T) and g*S(T) interpolation   #
-#-------------------------------------#
+##--------------------------------------------##
+##  Calculate g*(T) and g*S(T) interpolation  ##
+##--------------------------------------------##
 
+# g*(T) is ... #?
+# g*S(T) is ... #?
+
+#-- Read in g*(T) data and define an interpolated function of g*(T)--# #?
 gTab = pd.read_table("./Data/gstar.dat",  names=['T','gstar'])
 
 Ttab = gTab.iloc[:,0]
@@ -38,6 +47,7 @@ tck  = interpolate.splrep(Ttab, gtab, s=0)
 
 def gstar(T): return interpolate.splev(T, tck, der=0)
 
+#-- Read in g*S(T) data and define an interpolated function of g*S(T) and its derivative w.r.t T --# #?
 gSTab = pd.read_table("./Data/gstarS.dat",  names=['T','gstarS'])
 
 TStab = gSTab.iloc[:,0]
@@ -48,34 +58,34 @@ def gstarS(T): return interpolate.splev(T, tckS, der = 0)
 
 def dgstarSdT(T): return interpolate.splev(T, tckS, der = 1)
 
-#------------------------------------------------------------------------------------------------------------------#
-#                                            Input parameters                                                      #
-#------------------------------------------------------------------------------------------------------------------#
-
+##----------------------------##
+##  Define Boltzman equation  ##  #?
+##----------------------------##
 def FBEqs( a, v, nphi, mDM, sv):
-
-    #nphi   = 0.24358765646*mDM**3          # Initial photon number density
-    rRAD  = v[0] # Radiation energy density
-    NDM   = v[1] # DM number density
-    Tp    = v[2] # Temperature
-
-    #----------------#
-    #   Parameters   #
-    #----------------#
-
+    """ 
+    Calculate ... #?
+    
+    a:    #?
+    v:    List of parameters rRAD, NDM, Tp. See definitions below.
+    nphi: Initial photon number density
+    mDM:  Mass of the lightest DM pion #?
+    sv:   Coannihilation cross section
+    """
+    #-- Define Parameters --#
+    
+    rRAD  = v[0]                            # Radiation energy density
+    NDM   = v[1]                            # DM number density
+    Tp    = v[2]                            # Temperature
+    
     H   = np.sqrt(25.13274122871834 * GCF * (rRAD * 10.**(-4*a))/3.)    # Hubble parameter
-    Del = 1. + Tp * dgstarSdT(Tp)/(3. * gstarS(Tp))             # Temperature parameter
+    Del = 1. + Tp * dgstarSdT(Tp)/(3. * gstarS(Tp))                     # Temperature parameter
 
-    #----------------------------------------#
-    #    Radiation + Temperature equations   #
-    #----------------------------------------#
+    #-- Radiation + Temperature equations --#
     
     drRADda = 0.
     dTda    = - Tp/Del
 
-    #----------------------------------------#
-    #              Freeze-out DM             #
-    #----------------------------------------#
+    #-- Calculate freeze-out of DM pion --#
 
     NDMeq = (10.**(3*a) * mDM*mDM * Tp * kn(2, mDM/Tp))/(9.8696044)/nphi
     
@@ -87,18 +97,28 @@ def FBEqs( a, v, nphi, mDM, sv):
     
     return dEqsda
 
+##----------------------------##
+##  Test thermalization value ##
+##----------------------------##
+def testThermalization(sigmaW, t, NDM, nphi, H):
+    return min(sigmaW * 10.**(-3.*t) * NDM * nphi * 2 / H) # Should be <=1
 
-#-----------------------------------------#
-#          relic density calculation      #
-#-----------------------------------------#
-
+##-------------------------------------------------------------##
+##  Calculate relic density of DM constituent post deconfiment ##
+##-------------------------------------------------------------##
 def calcOmegaH2(mDM, mDMcon, sv):
-    Ti     = mDM   # Initial Universe temperature
+    """
+    mDM:    Mass of lightest DM pion
+    mDMcon: Mass of DM constituent (DM candidate)
+    sv:     Coannihilation thermally averaged cross section, relative velocity v=0, non-relativistic colliding particles 
+    """
+    Ti     = mDM                                        # Initial Universe temperature
     rRadi  = 0.3289868133696 * gstar(Ti) * Ti*Ti*Ti*Ti  # Initial radiation energy density -- assuming a radiation Universe
-    nphi   = 0.24358828401821708*Ti*Ti*Ti #0.24358765646*Ti**3
+    nphi   = 0.24358828401821708 * Ti*Ti*Ti             # Initial photon number density
     
     v0 = [rRadi, nphi, Ti]
     
+    #-- Solve Boltzmann Equation --#
     solFBE = solve_ivp(lambda t, z: FBEqs( t, z,  nphi, mDM, sv),
                                    [0, 2.0], v0, method='Radau',  rtol=1.e-10, atol=1.e-20, dense_output=True)
 
@@ -112,19 +132,15 @@ def calcOmegaH2(mDM, mDMcon, sv):
     sigmaW = (alphaW * alphaW * 3.1415)/ (mDMcon * mDMcon)
     
     rc = 1.053672e-23*cm_in_invkeV**-3  # Critical density in GeV^3
-    T0 = 2.34865e-13  # Temperature today in GeV
+    T0 = 2.34865e-13                    # Temperature today in GeV
     Conf = (gstarS(T0)/gstarS(T[-1]))*(T0/T[-1])*(T0/T[-1])*(T0/T[-1])*(1/rc)
 
-    deconf = 2. * mDMcon/mDM # converts the energy density of the confined phase to the energy density of the deconfined phase
-    Oh2   =  (NDM * nphi * 10.**(-3.*t) * mDM * Conf) * deconf #relic abundance AFTER deconfinement
+    #-- Convert energy density of the confined phase to the energy density of the deconfined phase --#
+    # Note there are 2 DM constituents in the lightest DM pion
+    deconf = 2. * mDMcon/mDM 
+    Oh2   =  (NDM * nphi * 10.**(-3.*t) * mDM * Conf) * deconf #Relic abundance AFTER deconfinement
     
-    ##-- Test thermalization --#
-    therm = min(sigmaW * 10.**(-3.*t) * NDM * nphi * 2 / H)
-    if  therm > 1.:
-        test_thermalise  = True
-        return 1000.0
-    else:
-        test_thermalise = False
-        return mDMcon#Oh2[-1]#sv#mDM/T[-1]#Oh2[-1]
-    #print(test_thermalise)
-        
+    #-- Test thermalization and store value --#
+    therm = testThermalization(sigmaW, t, NDM, nphi, H)
+    
+    return Oh2, therm

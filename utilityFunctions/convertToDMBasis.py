@@ -1,6 +1,12 @@
 import numpy as np
 from scipy.linalg import block_diag
 
+#################################################################
+##
+## Transform F (or Fhat) Matrices into definite DM charge basis
+##
+#################################################################
+
 #-- Transform FMatrix into DM basis --#
 def transformF(vMatrix, FMatrix, DEBUG=True):
     
