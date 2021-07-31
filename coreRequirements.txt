@@ -1,0 +1,4 @@
+ulysses
+jupyter
+numba
+pandas
