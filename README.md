@@ -41,5 +41,13 @@ This repository contains the code used in the paper "Dark Matter Production from
 To run ulysses on a test data point, run the following on the command line:
 
 $ uls-calc -m omegaH2_ulysses.py:SU2LDM test.dat
+
+To perform a 1D scan (example scans from 3.0 to 4.0 in fpi), run the following on the command line:
+
+$ uls-scan -m omegaH2_ulysses.py:SU2LDM test_1Dscan.dat
+
+To perform a multi-dimensional scan (example scans from 3.0 to 4.0 in fpi and -3.0 to -2.0 in bsmall) using multinest as a backend, run the following on the command line:
+
+$ uls-nest -m omegaH2_ulysses.py:SU2LDM test_multiDscan.dat
     
     
