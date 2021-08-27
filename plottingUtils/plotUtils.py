@@ -9,7 +9,7 @@ def RGBAtoRGBAtuple(color):
     a = color[3]
     return (r, g, b, a)
 
-def plotPDF(X, Y, pdf, axisRange, critDensityList, expBoundDict, plotArgs, EXPBOUNDS = True):
+def plotPDF(X, Y, pdf, axisRange, critDensityList, expBoundDict, plotArgs, EXPBOUNDS = True, plotName=''):
     """
     pdf: Normalized pdf
     axisRange: [xmin, xmax, ymin, ymax]
@@ -86,5 +86,11 @@ def plotPDF(X, Y, pdf, axisRange, critDensityList, expBoundDict, plotArgs, EXPBO
                  rotation=90, 
                  color=RGBAtoRGBAtuple((112,112,112,1)), 
                  fontweight='bold')
+    
+    #---------------# 
+    #-- Save Plot --#
+    #---------------# 
+    if plotName is not '':
+        plt.savefig(plotName, dpi=500)
 
     plt.show()
