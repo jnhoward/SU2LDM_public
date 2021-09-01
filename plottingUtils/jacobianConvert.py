@@ -22,8 +22,8 @@ def JacobianConvert2D(dfDict, CASE=1,CONVERTPARAMS=False):
         return dfDict
     
     #-- Check that CASE flag is appropriate --#
-    if(CASE not in np.array([1,2,3])):
-        print("Error: Please select CASE = 1, 2, or 3")
+    if(CASE not in np.array([1,2,3,4])):
+        print("Error: Please select CASE = 1, 2, 3 or 4")
         return
     
     #-- Set local definitions of scan parameters for convenience --#
@@ -100,3 +100,28 @@ def JacobianConvert2D(dfDict, CASE=1,CONVERTPARAMS=False):
 
         # Return new dfDict
         return dfDict_new
+    #######################################################################################
+    ### Transform data -- Case 4: If NOT plotting in log_10 and want both fpi and mD in TeV
+    #######################################################################################
+    elif(CASE==4):
+        # In this case the jacobian is NOT 1 so transformation of probabilities is required
+        
+        # fpi_pow -> fpi [TeV]
+        fpi_TeV    = (10.**-3)*10.**(fpi_pow)
+        
+        # bsmall_pow -> mD [TeV]
+        bsmall = 10.**bsmall_pow
+        mD_TeV = 4.*np.pi*fpi_TeV*bsmall
+        
+        # Calculate Jacobian i.e. |\partial(fpi, mD)/\partial(fpi_pow, bsmall_pow)|
+        J = fpi_TeV*mD_TeV*(np.log(10)**2)
+        
+        # Transform posterior and likelihood by multiplying by J
+        dfDict_new["posterior"]  = J*posterior
+        dfDict_new["likelihood"] = J*likelihood
+        dfDict_new["fpi_TeV"]    = fpi_TeV
+        dfDict_new["mD_TeV"]     = mD_TeV
+
+        # Return new dfDict
+        return dfDict_new
+        
