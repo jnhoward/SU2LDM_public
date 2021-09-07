@@ -1,6 +1,12 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
+# Set default fonts to Computer Modern (LaTeX)
+import matplotlib
+matplotlib.rcParams['mathtext.fontset'] = 'cm'
+matplotlib.rcParams['font.family'] = 'STIXGeneral'
+
+
 #-- Quick function to convert human RGBA to python RGBA tuple format --#
 def RGBAtoRGBAtuple(color):
     r = color[0]/255
@@ -37,8 +43,9 @@ def plotPDF(X, Y, pdf, axisRange, critDensityList, expBoundDict, plotArgs, EXPBO
     #-- Fix stlye --#
     #---------------#
 
-    # Set plot title
+    # Set plot titles
     plotTitle  = plotArgs["plotTitle"]
+    zAxisTitle = plotArgs["zAxisTitle"]
     xAxisTitle = plotArgs["xAxisTitle"]
     yAxisTitle = plotArgs["yAxisTitle"]
                     
@@ -56,14 +63,16 @@ def plotPDF(X, Y, pdf, axisRange, critDensityList, expBoundDict, plotArgs, EXPBO
 
     # Plot colorbar and add lables
     cb = plt.colorbar(im1, orientation='vertical', fraction=0.046, pad=0.04)
-    cb.set_label(plotTitle, size=20)
+    cb.set_label(zAxisTitle, size=20)
     cb.formatter.set_powerlimits((0, 0))
 
     # Set x and y axis labels
     ax.set(xlabel=xAxisTitle, ylabel=yAxisTitle)
-    ax.yaxis.label.set_size(16)
-    ax.xaxis.label.set_size(16)
+    ax.yaxis.label.set_size(20)
+    ax.xaxis.label.set_size(20)
 
+    # Add plot title
+    ax.set_title(plotTitle, fontsize=24)
 
     #---------------------------#
     #-- Add experiment bounds --#
@@ -86,6 +95,60 @@ def plotPDF(X, Y, pdf, axisRange, critDensityList, expBoundDict, plotArgs, EXPBO
                  rotation=90, 
                  color=RGBAtoRGBAtuple((112,112,112,1)), 
                  fontweight='bold')
+    
+    #---------------# 
+    #-- Save Plot --#
+    #---------------# 
+    if plotName is not '':
+        plt.savefig(plotName, dpi=500)
+
+    plt.show()
+    
+def plotAeff(X, Y, aeff, axisRange, plotArgs, plotName=''):
+    """
+    aeff: Effective cross section for each X,Y parameter point
+    axisRange: [xmin, xmax, ymin, ymax]
+    """
+    
+    fig, ax = plt.subplots(figsize=(8,8))
+       
+    #---------------#
+    #-- Make plot --#
+    #---------------#
+
+    # Set the aspect so that resulting figure is a square
+    aspect = (axisRange[1] - axisRange[0]) / (axisRange[3] - axisRange[2])
+
+    # Make plot
+    im1 = ax.imshow(np.rot90(aeff), cmap='GnBu', aspect=aspect, extent=axisRange, interpolation='bilinear')
+    
+    #---------------#
+    #-- Fix stlye --#
+    #---------------#
+
+    # Set plot titles
+    plotTitle  = plotArgs["plotTitle"]
+    zAxisTitle = plotArgs["zAxisTitle"]
+    xAxisTitle = plotArgs["xAxisTitle"]
+    yAxisTitle = plotArgs["yAxisTitle"]
+                    
+    
+    # Set plot limits
+    ax.set_xlim([axisRange[0], axisRange[1]])
+    ax.set_ylim([axisRange[2], axisRange[3]])
+
+    # Plot colorbar and add lables
+    cb = plt.colorbar(im1, orientation='vertical', fraction=0.046, pad=0.04)
+    cb.set_label(zAxisTitle, size=20)
+    cb.formatter.set_powerlimits((0, 0))
+
+    # Set x and y axis labels
+    ax.set(xlabel=xAxisTitle, ylabel=yAxisTitle)
+    ax.yaxis.label.set_size(20)
+    ax.xaxis.label.set_size(20)
+
+    # Add plot title
+    ax.set_title(plotTitle, fontsize=24)
     
     #---------------# 
     #-- Save Plot --#
