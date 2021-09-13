@@ -136,8 +136,8 @@ def calcOmegaH2(mDM, mDMcon, sv):
     Conf = (gstarS(T0)/gstarS(T[-1]))*(T0/T[-1])*(T0/T[-1])*(T0/T[-1])*(1/rc)
 
     #-- Convert energy density of the confined phase to the energy density of the deconfined phase --#
-    # Note there are 2 DM constituents in the lightest DM pion
-    deconf = 2. * mDMcon/mDM 
+    # Note there is 1 DM constituent in the lightest DM pion
+    deconf = mDMcon/mDM 
     Oh2   =  (NDM * nphi * 10.**(-3.*t) * mDM * Conf) * deconf #Relic abundance AFTER deconfinement
     
     #-- Test thermalization and store value --#
