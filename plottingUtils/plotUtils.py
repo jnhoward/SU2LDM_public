@@ -59,7 +59,7 @@ def plotPDF(X, Y, pdf, axisRange, critDensityList, expBoundDict, plotArgs, EXPBO
     strs = [r'2 $\sigma$',r'1 $\sigma$']
     for l, s in zip(CS.levels, strs):
         fmt[l] = s
-    ax.clabel(CS, CS.levels, inline=True, fmt=fmt, fontsize=10)
+    ax.clabel(CS, CS.levels, inline=True, fmt=fmt, fontsize=12)
 
     # Plot colorbar and add lables
     cb = plt.colorbar(im1, orientation='vertical', fraction=0.046, pad=0.04)
@@ -104,14 +104,15 @@ def plotPDF(X, Y, pdf, axisRange, critDensityList, expBoundDict, plotArgs, EXPBO
 
     plt.show()
     
-def plotAeff(X, Y, aeff, axisRange, plotArgs, plotName=''):
+def plotAeff(X, Y, aeff, axisRange, plotArgs, likelihoodDict, plotName=''):
     """
     aeff: Effective cross section for each X,Y parameter point
     axisRange: [xmin, xmax, ymin, ymax]
+    CS: contour object from likelihood plot
     """
     
     fig, ax = plt.subplots(figsize=(8,8))
-       
+    
     #---------------#
     #-- Make plot --#
     #---------------#
@@ -120,7 +121,15 @@ def plotAeff(X, Y, aeff, axisRange, plotArgs, plotName=''):
     aspect = (axisRange[1] - axisRange[0]) / (axisRange[3] - axisRange[2])
 
     # Make plot
-    im1 = ax.imshow(np.rot90(aeff), cmap='GnBu', aspect=aspect, extent=axisRange, interpolation='bilinear')
+    im1 = ax.imshow(np.rot90(aeff), cmap=plotArgs['cmap'], aspect=aspect, extent=axisRange, interpolation='bilinear')
+    
+    #-----------------------------------#
+    #-- Plot likelihood contour lines --#
+    #-----------------------------------#
+    Xpdf, Ypdf = likelihoodDict["X"], likelihoodDict["Y"]
+    pdf, critDensityList = likelihoodDict["pdf"], likelihoodDict["critDensity"]
+    CS = ax.contour(Xpdf, Ypdf, pdf, levels=critDensityList, 
+                    colors=[plotArgs['contourLineColor'], plotArgs['contourLineColor']], linestyles = ['--', '-']) 
     
     #---------------#
     #-- Fix stlye --#
@@ -132,6 +141,12 @@ def plotAeff(X, Y, aeff, axisRange, plotArgs, plotName=''):
     xAxisTitle = plotArgs["xAxisTitle"]
     yAxisTitle = plotArgs["yAxisTitle"]
                     
+    # Add labels to contours
+    fmt = {}
+    strs = [r'2 $\sigma$ Likelihood',r'1 $\sigma$  Likelihood']
+    for l, s in zip(CS.levels, strs):
+        fmt[l] = s
+    ax.clabel(CS, CS.levels, inline=True, fmt=fmt, fontsize=12)
     
     # Set plot limits
     ax.set_xlim([axisRange[0], axisRange[1]])
