@@ -96,6 +96,7 @@ def plotPDF(X, Y, pdf, axisRange, critDensityList, expBoundDict, plotArgs, EXPBO
     cb.ax.tick_params(labelsize=axisTickSize)
     cb.set_label(zAxisTitle, size=axisLabelSize)
     cb.ax.yaxis.get_offset_text().set_fontsize(axisTickSize)
+    cb.ax.yaxis.get_offset_text().set_horizontalalignment('center')
 
     # Set x and y axis labels
     ax.tick_params(axis='both', labelsize=axisTickSize)
@@ -202,6 +203,7 @@ def plotAeff(X, Y, aeff, axisRange, plotArgs, likelihoodDict, plotName=''):
     cb.ax.tick_params(labelsize=axisTickSize)
     cb.set_label(zAxisTitle, size=axisLabelSize)
     cb.ax.yaxis.get_offset_text().set_fontsize(axisTickSize)
+    cb.ax.yaxis.get_offset_text().set_horizontalalignment('center')
     
     # Set x and y axis labels
     ax.tick_params(axis='both', labelsize=axisTickSize)
