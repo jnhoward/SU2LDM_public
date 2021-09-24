@@ -1,8 +1,6 @@
 import numpy as np
 import itertools
 
-from crossSection import calcCrossSection
-
 #############################
 ##
 ## Calculate coannihilation
@@ -10,19 +8,29 @@ from crossSection import calcCrossSection
 #############################
 
 #-- Calculate sigma_ij (2D array) (assuming v=0) --#
-def calcSigma_ij(M2, F1Mat, F2Mat, aeff=True, DEBUG=True):
+def calcSigma_ij(M2, F1Mat, F2Mat, Ngen, aeff=True, DEBUG=True):
     # Calculates DM_i DM_j -> SM SM
     # Sums over all possible SM states
-
-    n = 15 # Number of DM + SM particles, purely for notational convenience
-    sig = np.zeros((n, n), dtype=complex)
+    if(Ngen==1):
+        n      = 15                        # Number of total pions (DM+SM)
+        DMindexlist = np.arange(8)+5       # Indices of DM charged pions in DM charge basis, 5 to 12 by definition
+        SMindexlist = np.delete(np.arange(n), DMindexlist) # Indices of SM charged pions in DM charge basis
+        SMindexlist = np.delete(SMindexlist, 0) # Ignore eta' (index 0) -> 1,2,3,4,13,14
+    elif(Ngen==3):
+        n      = 91                        # Number of total pions (DM+SM)
+        DMindexlist = np.arange(24)+1      # Indices of DM charged pions in DM charge basis, 1 to 24 by definition
+        SMindexlist = np.delete(np.arange(n), DMindexlist) # Indices of SM charged pions in DM charge basis
+        SMindexlist = np.delete(SMindexlist, 0) # Ignore eta' (index 0)
+    else:
+        print("Error: Invalid Ngen. Please use either Ngen=1 or Ngen=3.")
+        return         
     
-    DMlist = [5,6,7,8,9,10,11,12] # List of DM pions
-    allDM = itertools.product(DMlist, DMlist) 
+    sig = np.zeros((n, n), dtype=complex)    
+    
+    allDM = itertools.product(DMindexlist, DMindexlist) 
     # Note more efficient way if we account for the ij reaction symmetry <-- Maybe do this later #?
 
-    SMlist = [1,2,3,4,13,14] # List of SM pions, ignoring eta'
-    allSM = itertools.product(SMlist, SMlist)
+    allSM = itertools.product(SMindexlist, SMindexlist)
 
     total = itertools.product(allDM, allSM) # Need this step because nesting loops over itertools doesn't work
 
@@ -30,6 +38,7 @@ def calcSigma_ij(M2, F1Mat, F2Mat, aeff=True, DEBUG=True):
     particleMasses = np.sqrt(M2)
 
     #-- If we are calculating a_eff --# 
+    from crossSection import calcCrossSection
     if (aeff):
         for ((i,j),(c,d)) in total:
             sig[i,j] += calcCrossSection(i, j, c, d, M2, F1Mat, F2Mat, DEBUG)
@@ -49,7 +58,7 @@ def calcGeff2(g, delta, x):
     return np.sum(dummyArr)**2
 
 #-- Calculate effective cross-section to zeroth order in v --#
-def calcaEff(sigma, mDMarr, g, x, DEBUG=True):
+def calcaEff(sigma, mDMarr, g, x, Ngen, DEBUG=True):
 
     m1 = np.min(mDMarr) # Whichever DM particle is the lightest
 
@@ -61,13 +70,19 @@ def calcaEff(sigma, mDMarr, g, x, DEBUG=True):
     assert (geff2 != 0.)
 
     # Calculate aeff
-    sum = 0.
-    DMindexlist = [5,6,7,8,9,10,11,12]
-
+    if(Ngen==1):
+        DMindexlist = np.arange(8)+5  # Indices of DM charged pions in DM charge basis, 5 to 12 by definition
+    elif(Ngen==3):
+        DMindexlist = np.arange(24)+1 # Indices of DM charged pions in DM charge basis, 1 to 24 by definition
+    else:
+        print("Error: Invalid Ngen. Please use either Ngen=1 or Ngen=3.")
+        return   
+    
+    summ = 0.
     for (i,j) in itertools.product(DMindexlist, DMindexlist):
-        l = i-5
-        k = j-5
-        sum += sigma[i,j]*g[l]*g[k]*(1+delta[l])**(3./2.)*(1+delta[k])**(3./2.)*np.exp(-x*(delta[l] + delta[k]))
+        l = i-DMindexlist[0]
+        k = j-DMindexlist[0]
+        summ += sigma[i,j]*g[l]*g[k]*(1+delta[l])**(3./2.)*(1+delta[k])**(3./2.)*np.exp(-x*(delta[l] + delta[k]))
        
-    return sum*(1./geff2)
+    return summ*(1./geff2)
     

@@ -9,41 +9,50 @@ sys.path.append("utilityFunctions/")
 
 #-- Define default settings --#
 DEBUG = False  # Turn off DEBUG statements by default
-TIME  = False  # Turn off printing time statements
+TIME  = True  # Turn off printing time statements
 #Ngen  = 1      # Number of generations = 1
 
 ###################################################################################################
 ##
-##  How to run from command line:
-##  $ python omegaH2.py
+##  How to run from command line for Ngen=1:
+##  $ python omegaH2.py 1
+##  How to run from command line for Ngen=3:
+##  $ python omegaH2.py 3
 ##
 ##  OR
 ##
 ##  $ from omegah2 import omegaH2
-##  $ kwargs = { "gs":-2.000000, "fpi":4.2065334540265225,  "kappa":0.0, \
-##               "asmall":-3.000000,"bsmall":-2.0956895589789433, "sQsq":-3.000000}
+##  $ kwargs = { "gs":0.8, "fpi":155.*1000., "kappa":1.0, "asmall":0.625, "bsmall":0.01, "sQsq":0.3}
 ##  $ omegaH2(**kwargs)
 ##
 ###################################################################################################
 
-def omegaH2(gs, fpi, kappa, asmall, bsmall, sQsq, F1HatDMchargeBasisMatrix=None, F2HatDMchargeBasisMatrix=None, DEBUG=False):
+def omegaH2(Ngen, gs, fpi, kappa, asmall, bsmall, sQsq, F1HatMatrix=None, F2HatMatrix=None, DEBUG=False):
     
-    #-----------------------------------------------------------#
-    #-- Load precalculated matrices if not passed to function --#
-    #-----------------------------------------------------------#
-    if (F1HatDMchargeBasisMatrix is None) or (F2HatDMchargeBasisMatrix is None):  
-        if (path.exists("npyFiles/Fmatrices_Ngen1.npy") == False): 
-            print("Error: npyFiles/Fmatrices_Ngen1.npy does not exists. Please run preScan.py before proceeding.")
-            return
-        else: 
-            F1HatDMchargeBasisMatrix, F2HatDMchargeBasisMatrix = np.load("npyFiles/Fmatrices_Ngen1.npy")
-            
+    start_paramScanTime = time.process_time()
+    
+    #---------------------------------------#
+    #-- Set overall setings based on Ngen --#
+    #---------------------------------------#
+    if(Ngen==1):
+        FhatFilename = "npyFiles/FhatMatrices_DMBasis_Ngen1.npy"
+        nDMPions     = 8  
+    elif(Ngen==3):
+        FhatFilename    = "npyFiles/FhatMatrices_IntBasis_Ngen3.npy"
+        #WcoreFilename   = "npyFiles/WcoreMatrix_intToMass_Ngen3.npy"
+        VmatrixFilename = "npyFiles/VMatrix_massToDM_Ngen3.npy"
+        nDMPions        = 24
+    else:
+        print("Error: Invalid Ngen. Please use either Ngen=1 or Ngen=3.")
+        return 
+        
+        
     #-----------------------#
     #-- Define parameters --#
     #-----------------------#
     
     #-- Define fixed parameters --#
-    garr = np.array([1.,1.,1.,1.,1.,1.,1.,1.])
+    garr = np.ones(nDMPions)
     x    = 20.
     CA   = -1.
     CZ   = -1.
@@ -56,32 +65,60 @@ def omegaH2(gs, fpi, kappa, asmall, bsmall, sQsq, F1HatDMchargeBasisMatrix=None,
     mD   = bsmall*lamW
     
     fsq  = fpi**2 
-    pi3  = np.pi**3
-    pi2  = np.pi**2
-    eQsq = eQ**2
-    gssq = gs**2    
+#     pi3  = np.pi**3
+#     pi2  = np.pi**2
+#     eQsq = eQ**2
+#     gssq = gs**2     
     
+    #-----------------------------------------------------------#
+    #-- Load precalculated matrices if not passed to function --#
+    #-----------------------------------------------------------#
+    if (F1HatMatrix is None) or (F2HatMatrix is None):  
+        if (path.exists(FhatFilename) == False): 
+            print("Error: %s does not exists. Please run preScan.py before proceeding."%FhatFilename)
+            return
+        else: 
+            F1HatMatrix, F2HatMatrix = np.load(FhatFilename)
+    
+    #-------------------------------------------#
+    #-- Transform Fhat matrices if applicable --#
+    #-------------------------------------------#
+    if(Ngen==1):
+        F1HatMatrix_DMbasis, F2HatMatrix_DMbasis = F1HatMatrix, F2HatMatrix
+    elif(Ngen==3):
+         
+        #-- Transform from interaction to mass basis --#
+        from convertToMassBasis import calcMassTransformMatrix, convertToMassBasis
+        
+        # Calculate mass transformation matrix and perform transformation
+        Wmatrix = calcMassTransformMatrix(lamW, fpi, kappa, mD, Ngen, DEBUG)
+        F1HatMatrix_mass, F2HatMatrix_mass = convertToMassBasis(F1HatMatrix, F2HatMatrix, Wmatrix, Ngen, DEBUG)
+        
+        #-- Transform from mass to DM charge basis --#
+        from convertToDMBasis import calcDMTransformMatrix, convertToDMBasis
+        
+        # Load pre-calculated DM transformation matrix and perform transformation
+        Vmatrix = np.load(VmatrixFilename)[0]
+        F1HatMatrix_DMbasis, F2HatMatrix_DMbasis = convertToDMBasis(F1HatMatrix, F2HatMatrix, Vmatrix, DEBUG)
+
+    #---------------------------------------------------------------#
+    #-- Calculate F1DMchargeBasisMatrix and F2DMchargeBasisMatrix --#
+    #---------------------------------------------------------------#
+    F1const = 4./fsq
+    F2const = -2.*mD*(lamW*lamW*lamW)/(3*(fsq*fsq))
+
+    F1DMchargeBasisMatrix = F1const*F1HatMatrix_DMbasis
+    F2DMchargeBasisMatrix = F2const*F2HatMatrix_DMbasis
+        
+    #----------------------------------------#
     #-- Create Mass Squared Array of Pions --#
-
-    # NOTE: The \ continues the expression onto the next line for readability
-    # https://stackoverflow.com/questions/53162/how-can-i-do-a-line-break-line-continuation-in-python  
-
-    Msq0     = 64.*fpi*(mD*pi3 + 6.*fpi*kappa*pi2)
-    Msq1to4  = (fsq*(-3.*CA*eQsq + 2.*CZ*eQsq - 9.*CG*gssq + 6.*CW*gssq))/6. + \
-                    (CZ*eQsq*fsq)/(6.*sQsq) - (CZ*eQsq*fsq*sQsq)/2.
-    Msq5and8 =  64.*fpi*mD*pi3
-    Msq6and7 =  (-2.*fpi*(3.*CA*eQsq*fpi - CZ*eQsq*fpi - 96.*mD*pi3))/3. - 2.*CZ*eQsq*fsq*sQsq
-
-    Msq9to12 =  -0.5*(fpi*(CA*eQsq*fpi + 3*CG*fpi*gssq - 128.*mD*pi3)) + \
-                    (CZ*eQsq*fsq)/(18.*sQsq) - (CZ*eQsq*fsq*sQsq)/2.
-    Msq14    =  64.*fpi*mD*pi3
-
-    M2 = np.array([Msq0, Msq1to4, Msq1to4, Msq1to4, Msq1to4, Msq5and8, Msq6and7, \
-                   Msq6and7, Msq5and8, Msq9to12, Msq9to12, Msq9to12, Msq9to12, 0., Msq14]) # Mass Squared Array
- 
-    # Create Array of DM pions only
-    M2DMarr = M2[5:13]
-
+    #----------------------------------------#
+    from calcPionMassSq import calcPionMassSq
+    M2, M2DMarr = calcPionMassSq(Ngen, CA, CG, CW, CZ, eQ, gs, sQsq, lamW, fpi, mD, kappa, DEBUG)
+    #M2 = np.ones(M2.shape)#!
+    #M2DMarr = np.ones(M2DMarr.shape)#!
+    # Note need to redefine M2 to be returned as masses in DM charge basis
+    
     if (DEBUG):        
         print("Hyperparameter Settings:")
         print("Mass of DM (in GeV ?):          ", mD)
@@ -100,20 +137,13 @@ def omegaH2(gs, fpi, kappa, asmall, bsmall, sQsq, F1HatDMchargeBasisMatrix=None,
         print(M2DMarr)
         print("")
 
-    #-- Calculate F1DMchargeBasisMatrix and F2DMchargeBasisMatrix --#
-    F1const = 4./fsq
-    F2const = -2.*mD*(lamW*lamW*lamW)/(3*(fsq * fsq))
-
-    F1DMchargeBasisMatrix = F1const*F1HatDMchargeBasisMatrix
-    F2DMchargeBasisMatrix = F2const*F2HatDMchargeBasisMatrix
-
     #-- Calculate aeff --#
     
     start = time.process_time()
     from coannihilation import calcSigma_ij, calcaEff
 
     # Calculate sigma_ij matrix 
-    sigij = calcSigma_ij(M2, F1DMchargeBasisMatrix, F2DMchargeBasisMatrix, aeff=True, DEBUG=DEBUG)
+    sigij = calcSigma_ij(M2, F1DMchargeBasisMatrix, F2DMchargeBasisMatrix, Ngen, aeff=True, DEBUG=DEBUG)
     end   = time.process_time()
 
     if (TIME):
@@ -124,7 +154,7 @@ def omegaH2(gs, fpi, kappa, asmall, bsmall, sQsq, F1HatDMchargeBasisMatrix=None,
 
     # Calculate aeff
     start = time.process_time()
-    aeff  = calcaEff(sigij, M2DMarr, garr, x, DEBUG)
+    aeff  = calcaEff(sigij, M2DMarr, garr, x, Ngen, DEBUG)
     end   = time.process_time()
 
     if (DEBUG):
@@ -156,13 +186,12 @@ def omegaH2(gs, fpi, kappa, asmall, bsmall, sQsq, F1HatDMchargeBasisMatrix=None,
         print("")
     
     return omegaH2[-1], therm
-    
-    
+
     
 if __name__ == "__main__":
     
-    kwargs = { "gs":-2.000000, "fpi":4.2065334540265225,  "kappa":0.0, "asmall":-3.000000, 
-              "bsmall":-2.0956895589789433, "sQsq":-3.000000}
-    oH2 = omegaH2(**kwargs, DEBUG=DEBUG)
+    Ngen = int(sys.argv[1])
+    kwargs = { "gs":0.8, "fpi":155.*1000., "kappa":1.0, "asmall":0.625, "bsmall":0.01, "sQsq":0.3}
+    oH2, _ = omegaH2(Ngen, **kwargs, DEBUG=DEBUG)
     print(oH2)
     
