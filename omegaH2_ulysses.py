@@ -11,7 +11,7 @@ sys.path.append("utilityFunctions/")
 #-- Define default settings --#
 DEBUG = False  # Turn off DEBUG statements by default
 TIME  = False  # Turn off printing time statements
-#Ngen  = 1      # Number of generations = 1
+Ngen  = 1      # Number of generations = 1
 
 class SU2LDM(ulysses.ULSBase):
 
@@ -76,7 +76,7 @@ class SU2LDM(ulysses.ULSBase):
         #-- Pass these to omegah2() --#
         from omegaH2 import omegaH2
         
-        oh2, _ = omegaH2(gs, fpi, kappa, asmall, bsmall, sQsq, \
+        oh2, _ = omegaH2(Ngen, gs, fpi, kappa, asmall, bsmall, sQsq, \
                              self.F1HatDMchargeBasisMatrix, self.F2HatDMchargeBasisMatrix, DEBUG)
         
         return oh2
