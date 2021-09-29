@@ -89,8 +89,8 @@ def calcPionMassSq_3gen(CA, CG, CW, CZ, eQ, gs, sQsq, lamW, fpi, mD, kappa, DEBU
     off1Sq = (off_1(fpi, lamW, mD))**2
     term1  = on1 + on10 
     term2  = np.sqrt( 4*off1Sq + (on1**2) - 2*on1*on10 + (on10**2) )
-    M2arr[89] = 0.5*(-term1 + term2)
-    M2arr[90] = 0.5*( term1 + term2)
+    M2arr[89] = 0.5*(term1 - term2)
+    M2arr[90] = 0.5*(term1 + term2)
     
     #-- Identify pions which contain constituent DM --#
     DMindexArr = np.concatenate((on6Index, on7Index, on9Index))
