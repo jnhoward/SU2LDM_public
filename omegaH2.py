@@ -9,7 +9,7 @@ sys.path.append("utilityFunctions/")
 
 #-- Define default settings --#
 DEBUG = False  # Turn off DEBUG statements by default
-TIME  = True  # Turn off printing time statements
+TIME  = False  # Turn off printing time statements
 #Ngen  = 1      # Number of generations = 1
 
 ###################################################################################################
@@ -114,7 +114,7 @@ def omegaH2(Ngen, gs, fpi, kappa, asmall, bsmall, sQsq, F1HatMatrix=None, F2HatM
     #-- Create Mass Squared Array of Pions --#
     #----------------------------------------#
     from calcPionMassSq import calcPionMassSq
-    M2, M2DMarr = calcPionMassSq(Ngen, CA, CG, CW, CZ, eQ, gs, sQsq, lamW, fpi, mD, kappa, DEBUG)
+    M2, _, M2DMarr = calcPionMassSq(Ngen, CA, CG, CW, CZ, eQ, gs, sQsq, lamW, fpi, mD, kappa, DEBUG)
     #M2 = np.ones(M2.shape)#!
     #M2DMarr = np.ones(M2DMarr.shape)#!
     # Note need to redefine M2 to be returned as masses in DM charge basis

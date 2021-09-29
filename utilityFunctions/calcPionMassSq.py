@@ -28,17 +28,23 @@ def calcPionMassSq_1gen(CA, CG, CW, CZ, eQ, gs, sQsq, lamW, fpi, mD, kappa, DEBU
                     (CZ*eQsq*fsq)/(18.*sQsq) - (CZ*eQsq*fsq*sQsq)/2.
     Msq14    =  64.*fpi*mD*pi3
 
-    M2arr = np.array([Msq0, Msq1to4, Msq1to4, Msq1to4, Msq1to4, Msq5and8, Msq6and7, \
-                   Msq6and7, Msq5and8, Msq9to12, Msq9to12, Msq9to12, Msq9to12, 0., Msq14]) # Mass Squared Array
+    M2arr_mass = np.array([Msq0, Msq1to4, Msq1to4, Msq1to4, Msq1to4, Msq5and8, Msq6and7, \
+                   Msq6and7, Msq5and8, Msq9to12, Msq9to12, Msq9to12, Msq9to12, 0., Msq14]) # Mass Squared Array in mass basis
+    
+    #-- Convert to mass array in DM charge basis --#
+    #  8 ->  6,  6 ->  7,  7 ->  8
+    # 12 -> 10, 10 -> 11, 11 -> 12
+    indxArr = np.array([0, 1, 2, 3, 4, 5, 8, 6, 7, 9, 12, 10, 11, 13, 14])
+    M2arr_DMcharge = M2arr_mass[indxArr]
  
     #-- Identify pions which contain constituent DM --#
     DMindexArr = np.arange(8)+5
     #SMindexArr = np.delete(np.arange(15), DMindexArr)
     
     #-- Find M2DMarr --#
-    M2DMarr = M2arr[DMindexArr]
+    M2DMarr = M2arr_DMcharge[DMindexArr]
     
-    return M2arr, M2DMarr#, DMindexArr, SMindexArr
+    return M2arr_DMcharge, M2arr_mass, M2DMarr#, DMindexArr, SMindexArr
     
 def calcPionMassSq_3gen(CA, CG, CW, CZ, eQ, gs, sQsq, lamW, fpi, mD, kappa, DEBUG=True):
     #()
