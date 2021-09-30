@@ -9,7 +9,7 @@ sys.path.append("utilityFunctions/")
 
 #-- Define default settings --#
 DEBUG = False  # Turn off DEBUG statements by default
-TIME  = True  # Turn off printing time statements by default
+TIME  = False  # Turn off printing time statements by default
 PLOT  = False  # Turn off plotting by default
 
 #################################
@@ -62,9 +62,7 @@ def preScan(Ngen, DEBUG=False):
         # F1Matrix and F2Matrix with appropriate factors will be calculated later
         start = time.process_time()
         from calcF1F2hat import calcF1F2HatMatrices
-        #F1HatMatrix, F2HatMatrix = calcF1F2HatMatrices(X, A, Ngen, DEBUG) #! commented out to test rest of functions
-        F1HatMatrix = np.zeros((91,91,91,91), dtype=complex) #!
-        F2HatMatrix = np.zeros((91,91,91,91), dtype=complex) #!
+        F1HatMatrix, F2HatMatrix = calcF1F2HatMatrices(np.array(X), A, Ngen, DEBUG)
         end   = time.process_time()
         
         if (DEBUG):
