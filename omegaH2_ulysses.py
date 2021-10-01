@@ -1,6 +1,7 @@
 import numpy as np
 import time
 import os.path
+import os.abort as abort
 from os import path
 import ulysses
 
@@ -34,11 +35,12 @@ class SU2LDM(ulysses.ULSBase):
         #---------------------------------#
         #-- Load precalculated matrices --#
         #---------------------------------#
-        if (path.exists("npyFiles/Fmatrices_Ngen1.npy") == False):
-            print("Error: npyFiles/Fmatrices_Ngen1.npy does not exists. Please run preScan.py before proceeding.")
+        FmatFilePath = "npyFiles/FhatMatrices_DMBasis_Ngen1.npy"
+        if (path.exists("FmatFilePath") == False):
+            print("Error: %s does not exists. Please run preScan.py before proceeding."%FmatFilePath)
             abort()
         else:
-            self.F1HatDMchargeBasisMatrix, self.F2HatDMchargeBasisMatrix = np.load("npyFiles/Fmatrices_Ngen1.npy")
+            self.F1HatDMchargeBasisMatrix, self.F2HatDMchargeBasisMatrix = np.load(FmatFilePath)
    
 
     def setParams(self, pdict):
