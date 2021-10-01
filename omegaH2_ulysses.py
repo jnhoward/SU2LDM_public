@@ -36,7 +36,7 @@ class SU2LDM(ulysses.ULSBase):
         #-- Load precalculated matrices --#
         #---------------------------------#
         FmatFilePath = "npyFiles/FhatMatrices_DMBasis_Ngen1.npy"
-        if (path.exists("FmatFilePath") == False):
+        if (path.exists(FmatFilePath) == False):
             print("Error: %s does not exists. Please run preScan.py before proceeding."%FmatFilePath)
             abort()
         else:
