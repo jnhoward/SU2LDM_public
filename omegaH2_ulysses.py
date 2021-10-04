@@ -25,12 +25,13 @@ class SU2LDM(ulysses.ULSBase):
         self.gs            = None # Log10[M/1g]
         self.fpi           = None # a_star
         self.kappa         = None # Log10[beta']
-        self.asmall       = None
+        #self.asmall       = None
+        self.eQ            = None
         self.bsmall        = None
         self.sQsq          = None
 
         self.pnames = ['m',  'M1', 'M2', 'M3', 'delta', 'a21', 'a31', 'x1', 'x2', 'x3', 'y1', 'y2', 'y3',
-                       't12', 't13', 't23', 'gs', 'fpi', 'kappa', 'asmall', 'bsmall', 'sQsq']
+                       't12', 't13', 't23', 'gs', 'fpi', 'kappa', 'eQ', 'bsmall', 'sQsq']
         
         #---------------------------------#
         #-- Load precalculated matrices --#
@@ -51,7 +52,8 @@ class SU2LDM(ulysses.ULSBase):
         self.gs         = pdict["gs"]
         self.fpi        = pdict["fpi"]
         self.kappa      = pdict["kappa"]
-        self.asmall     = pdict["asmall"]
+        #self.asmall     = pdict["asmall"]
+        self.eQ         = pdict["eQ"]
         self.bsmall     = pdict["bsmall"]
         self.sQsq       = pdict["sQsq"]
 
@@ -71,14 +73,15 @@ class SU2LDM(ulysses.ULSBase):
         gs       = 10.**self.gs
         fpi      = 10.**self.fpi
         kappa    = 10.**self.kappa
-        asmall   = 10.**self.asmall
+        #asmall   = 10.**self.asmall
+        eQ       = 10.**self.eQ
         bsmall   = 10.**self.bsmall
         sQsq     = 10.**self.sQsq
         
         #-- Pass these to omegah2() --#
         from omegaH2 import omegaH2
         
-        oh2, _ = omegaH2(Ngen, gs, fpi, kappa, asmall, bsmall, sQsq, \
+        oh2, _ = omegaH2(Ngen, gs, fpi, kappa, eQ, bsmall, sQsq, \
                              self.F1HatDMchargeBasisMatrix, self.F2HatDMchargeBasisMatrix, DEBUG)
         
         return oh2

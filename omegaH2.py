@@ -22,12 +22,12 @@ TIME  = False  # Turn off printing time statements
 ##  OR
 ##
 ##  $ from omegah2 import omegaH2
-##  $ kwargs = { "gs":0.8, "fpi":155.*1000., "kappa":1.0, "asmall":0.625, "bsmall":0.01, "sQsq":0.3}
+##  $ kwargs = { "Ngen": 1, "gs":0.8, "fpi":155.*1000., "kappa":1.0, "eQ":0.5, "bsmall":0.01, "sQsq":0.3}
 ##  $ omegaH2(**kwargs)
 ##
 ###################################################################################################
 
-def omegaH2(Ngen, gs, fpi, kappa, asmall, bsmall, sQsq, F1HatMatrix=None, F2HatMatrix=None, DEBUG=False):
+def omegaH2(Ngen, gs, fpi, kappa, eQ, bsmall, sQsq, F1HatMatrix=None, F2HatMatrix=None, DEBUG=False):
     
     start_paramScanTime = time.process_time()
     
@@ -60,7 +60,7 @@ def omegaH2(Ngen, gs, fpi, kappa, asmall, bsmall, sQsq, F1HatMatrix=None, F2HatM
     CW   =  1.
     
     #-- Parameters from arguments --#
-    eQ   = asmall*gs
+    #eQ   = asmall*gs
     lamW = 4.*np.pi*fpi
     mD   = bsmall*lamW
     
