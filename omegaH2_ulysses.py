@@ -1,7 +1,7 @@
 import numpy as np
 import time
 import os.path
-import os.abort as abort
+import os
 from os import path
 import ulysses
 
@@ -38,7 +38,7 @@ class SU2LDM(ulysses.ULSBase):
         FmatFilePath = "npyFiles/FhatMatrices_DMBasis_Ngen1.npy"
         if (path.exists(FmatFilePath) == False):
             print("Error: %s does not exists. Please run preScan.py before proceeding."%FmatFilePath)
-            abort()
+            os.abort()
         else:
             self.F1HatDMchargeBasisMatrix, self.F2HatDMchargeBasisMatrix = np.load(FmatFilePath)
    
