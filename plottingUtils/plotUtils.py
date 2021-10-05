@@ -181,7 +181,7 @@ def plotAeff(X, Y, aeff, axisRange, plotArgs, likelihoodDict, plotName=''):
                     
     # Add labels to contours
     fmt = {}
-    strs = [r'2 $\sigma$ Likelihood',r'1 $\sigma$  Likelihood']
+    strs = [r'2 $\sigma$',r'1 $\sigma$'] #[r'2 $\sigma$ Likelihood',r'1 $\sigma$  Likelihood']
     for l, s in zip(CS.levels, strs):
         fmt[l] = s
     ax.clabel(CS, CS.levels, inline=True, fmt=fmt, fontsize=13)
