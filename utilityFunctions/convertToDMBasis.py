@@ -46,18 +46,19 @@ def calcDMTransformMatrix(Ngen, DEBUG=True):
         B <- Pions in mass basis with V = +-i
         
         D | D+1:  1 |  2 |  3 |  4 |  5 |  6 |  7 |  8 |  9 | 10 | 11 | 12 |
-        A      :    21   |    22   |    41   |    42   |    57   |    58   |
-        B      :    24   |    23   |    44   |    43   |    60   |    59   |
+        A+1    :    21   |    22   |    41   |    42   |    57   |    58   |
+        B+1    :    24   |    23   |    44   |    43   |    60   |    59   |
 
         (cont.)
         D | D+1: 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21 | 22 | 23 | 24 |
-        A      :    69   |    70   |    77   |    78   |    81   |    82   |
-        B      :    72   |    71   |    80   |    79   |    84   |    83   |
-
+        A+1    :    69   |    70   |    77   |    78   |    81   |    82   |
+        B+1    :    72   |    71   |    80   |    79   |    84   |    83   |
+        
+        Note that here the values shown above are in Mathematica notation, i.e. 21 instead of python notation i.e. 20.
         """
         D = np.array([ 1,  3,  5,  7,  9, 11, 13, 15, 17, 19, 21, 23])
-        A = np.array([21, 22, 41, 42, 57, 58, 69, 70, 77, 78, 81, 82])
-        B = np.array([24, 23, 44, 43, 60, 59, 72, 71, 80, 79, 84, 83])
+        A = np.array([21, 22, 41, 42, 57, 58, 69, 70, 77, 78, 81, 82])-1
+        B = np.array([24, 23, 44, 43, 60, 59, 72, 71, 80, 79, 84, 83])-1
     else:
         print("Error: Invalid Ngen. Please use either Ngen=1 or Ngen=3.")
         return 0
