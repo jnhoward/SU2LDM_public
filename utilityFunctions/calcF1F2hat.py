@@ -9,7 +9,7 @@ import itertools
 #####################################################
 
 #-- Define F1 function --#
-def F1Hat(n, aArr, bArr, cArr, dArr, X):
+def F1Hat_vec(n, aArr, bArr, cArr, dArr, X):
 
     Xtot0 = X[cArr] @ X[aArr] @ X[dArr] @ X[bArr] #np.linalg.multi_dot([X[c], X[a], X[d], X[b]])
     Xtot1 = X[aArr] @ X[cArr] @ X[dArr] @ X[bArr] #np.linalg.multi_dot([X[a], X[c], X[d], X[b]])
@@ -26,7 +26,7 @@ def F1Hat(n, aArr, bArr, cArr, dArr, X):
     return (term1 + term2 + term3).reshape((n,n,n,n))
 
 #-- Define F2 function --#
-def F2Hat(n, aArr, bArr, cArr, dArr, A, X):
+def F2Hat_vec(n, aArr, bArr, cArr, dArr, A, X):
 
     Xtot = A @ X[aArr] @ X[bArr] @ X[cArr] @ X[dArr] #np.linalg.multi_dot([A, X[a], X[b], X[c], X[d]])
     trArr = np.trace(Xtot, axis1=1, axis2=2)
@@ -34,7 +34,7 @@ def F2Hat(n, aArr, bArr, cArr, dArr, A, X):
     return trArr.reshape((n,n,n,n))
 
 #-- Define F1 function --#
-def F1Hat_old(a, b, c, d, X):
+def F1Hat(a, b, c, d, X):
 
     Xtot0 = X[c] @ X[a] @ X[d] @ X[b] #np.linalg.multi_dot([X[c], X[a], X[d], X[b]])
     Xtot1 = X[a] @ X[c] @ X[d] @ X[b] #np.linalg.multi_dot([X[a], X[c], X[d], X[b]])
@@ -51,14 +51,14 @@ def F1Hat_old(a, b, c, d, X):
     return term1 + term2 + term3
 
 #-- Define F2 function --#
-def F2Hat_old(a, b, c, d, A, X):
+def F2Hat(a, b, c, d, A, X):
 
     Xtot = A @ X[a] @ X[b] @ X[c] @ X[d] #np.linalg.multi_dot([A, X[a], X[b], X[c], X[d]])
 
     return np.trace(Xtot)
 
 #-- Calculate F1 and F2 Matrices --#
-def calcF1F2HatMatrices(X, A, Ngen=1, DEBUG=True):
+def calcF1F2HatMatrices_vec(X, A, Ngen=1, DEBUG=True):
             
     # Create F1 and F2 Matrices of all possible combinations (tensor)
     if(Ngen==1):
@@ -67,18 +67,19 @@ def calcF1F2HatMatrices(X, A, Ngen=1, DEBUG=True):
         n = 91 # 91 = eta' + 90 pions, 90 = 2Nf^2 − Nf − 1 = 2 (7)^2 - 7 - 1
     else:
         print("Error: Invalid Ngen. Please use either Ngen=1 or Ngen=3.")
-        return 0
-        
-    #F1HatMatrix = np.zeros((n,n,n,n), dtype=complex)
-    #F2HatMatrix = np.zeros((n,n,n,n), dtype=complex)
+        return 
+
+#     # Dummy version for quicker calculation
+#     F1HatMatrix = np.zeros((n,n,n,n), dtype=complex)
+#     F2HatMatrix = np.zeros((n,n,n,n), dtype=complex)
 
     dummyarr = np.arange(n)
     indexArr = np.array(list((itertools.product(dummyarr, dummyarr, dummyarr, dummyarr))))
 
     aArr, bArr, cArr, dArr = indexArr[:,0], indexArr[:,1], indexArr[:,2], indexArr[:,3]
     
-    F1HatMatrix = F1Hat(n, aArr, bArr, cArr, dArr, X)
-    F2HatMatrix = F2Hat(n, aArr, bArr, cArr, dArr, A, X)       
+    F1HatMatrix = F1Hat_vec(n, aArr, bArr, cArr, dArr, X)
+    F2HatMatrix = F2Hat_vec(n, aArr, bArr, cArr, dArr, A, X)       
     
     if (DEBUG):#! Make these more meaningful later
         print("F1Matrix[7, 7, 2, 2] = ", F1HatMatrix[7, 7, 2, 2]) 
@@ -91,7 +92,7 @@ def calcF1F2HatMatrices(X, A, Ngen=1, DEBUG=True):
     return F1HatMatrix, F2HatMatrix
 
 #-- Calculate F1 and F2 Matrices --#
-def calcF1F2HatMatrices_old(X, A, Ngen=1, DEBUG=True):
+def calcF1F2HatMatrices(X, A, Ngen=1, DEBUG=True):
             
     # Create F1 and F2 Matrices of all possible combinations (tensor)
     if(Ngen==1):
@@ -100,7 +101,7 @@ def calcF1F2HatMatrices_old(X, A, Ngen=1, DEBUG=True):
         n = 91 # 91 = eta' + 90 pions, 90 = 2Nf^2 − Nf − 1 = 2 (7)^2 - 7 - 1
     else:
         print("Error: Invalid Ngen. Please use either Ngen=1 or Ngen=3.")
-        return 0
+        return 
         
     F1HatMatrix = np.zeros((n,n,n,n), dtype=complex)
     #print(F1HatMatrix.dtype)#!
@@ -109,9 +110,15 @@ def calcF1F2HatMatrices_old(X, A, Ngen=1, DEBUG=True):
     #dummyarr = np.arange(n-1) + 1 # Don't consider the eta' (assumed to be the 0th pion)    
     dummyarr = np.arange(n) #calculate eta' things for easier comparison with new method
     
+    it = 0
     for (a,b,c,d) in itertools.product(dummyarr, dummyarr, dummyarr, dummyarr):
-        F1HatMatrix[a,b,c,d] = F1Hat_old(a, b, c, d, X)
-        F2HatMatrix[a,b,c,d] = F2Hat_old(a, b, c, d, A, X)     
+        
+        if(a == it):
+            it+=1
+            print("Now processing: ",a,b,c,d)
+        
+        F1HatMatrix[a,b,c,d] = F1Hat(a, b, c, d, X)
+        F2HatMatrix[a,b,c,d] = F2Hat(a, b, c, d, A, X)     
         
     
     if (DEBUG):#! Make these more meaningful later

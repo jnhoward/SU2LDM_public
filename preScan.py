@@ -16,6 +16,7 @@ PLOT  = False  # Turn off plotting by default
 ##
 ##  How to run from command line for Ngen=1:
 ##  $ python preScan.py 1 
+##
 ##  How to run from command line for Ngen=3:
 ##  $ python preScan.py 3 
 ##
@@ -30,7 +31,7 @@ def preScan(Ngen, DEBUG=False):
         filename = "npyFiles/FhatMatrices_IntBasis_Ngen3.npy"
     else:
         print("Error: Invalid Ngen. Please use either Ngen=1 or Ngen=3.")
-        return 0        
+        return         
 
     #-- Check if file already exists --#
     if(path.exists(filename)): # If matrices have been calculated already, raise error
@@ -79,14 +80,17 @@ def preScan(Ngen, DEBUG=False):
 
         #-- Transform F1HatMatrix, F2HatMatrix if applicable and save file --#
         # In general we want to transform from interaction to mass to DM charge bases
+        #
         # For Ngen = 1: 
         #    Mass ~ interaction and mass to DM transformation is independent of scan/benchmark parameters.
         #    Therefore we perform the transformation here before scanning.
         #    We store F*HatMatrices in the DM charge basis.
+        #
         # For Ngen = 3:
         #    Interaction to mass transformation is NOT independent of scan/benchmark parameters.
-        #    Therefore interaction->mass->DM charge will need to happen during scan. This will be somewhat slower.
-        #    We store F*HatMatrices in the interaction basis.    
+        #    Therefore interaction->mass->DM charge will need to happen during scan. This will be slower.
+        #    We store F*HatMatrices in the interaction basis.
+        
         print("Transforming F1Hat and F2Hat matrices if applicable, or storing transformation matrices")
         start = time.process_time()
         if(Ngen==1):
@@ -99,10 +103,11 @@ def preScan(Ngen, DEBUG=False):
             np.save(filename, [F1HatDMchargeBasisMatrix, F2HatDMchargeBasisMatrix])
         else:
             # Do not transform, but make sure transformation matrices are calculated and stored
-            from convertToMassBasis import calcCoreWmatrix
-            WcoreMatrix = calcCoreWmatrix(DEBUG)
-            np.save("npyFiles/WcoreMatrix_intToMass_Ngen3.npy", [WcoreMatrix])
             
+            # Transformation from interaction to mass will be calculated during scan due to 
+            # numerical diagonalization requirement. So we only precalculate mass -> DM charge 
+            # basis transformation. Since the matrix structure doesn't change we can predict the 
+            # order of eigenvalues and vectors post diagonalization           
             from convertToDMBasis import calcDMTransformMatrix
             Vmatrix = calcDMTransformMatrix(Ngen, DEBUG)
             np.save("npyFiles/VMatrix_massToDM_Ngen3.npy", [Vmatrix])

@@ -27,7 +27,7 @@ TIME  = False  # Turn off printing time statements
 ##
 ###################################################################################################
 
-def omegaH2(Ngen, gs, fpi, kappa, eQ, bsmall, sQsq, F1HatMatrix=None, F2HatMatrix=None, DEBUG=False):
+def omegaH2(Ngen, gs, fpi, kappa, eQ, bsmall, sQsq, F1HatMatrix=None, F2HatMatrix=None, DEBUG=False, M1AEFF=False):
     
     start_paramScanTime = time.process_time()
     
@@ -39,13 +39,11 @@ def omegaH2(Ngen, gs, fpi, kappa, eQ, bsmall, sQsq, F1HatMatrix=None, F2HatMatri
         nDMPions     = 8  
     elif(Ngen==3):
         FhatFilename    = "npyFiles/FhatMatrices_IntBasis_Ngen3.npy"
-        #WcoreFilename   = "npyFiles/WcoreMatrix_intToMass_Ngen3.npy"
         VmatrixFilename = "npyFiles/VMatrix_massToDM_Ngen3.npy"
         nDMPions        = 24
     else:
         print("Error: Invalid Ngen. Please use either Ngen=1 or Ngen=3.")
-        return 
-        
+        return     
         
     #-----------------------#
     #-- Define parameters --#
@@ -62,13 +60,22 @@ def omegaH2(Ngen, gs, fpi, kappa, eQ, bsmall, sQsq, F1HatMatrix=None, F2HatMatri
     #-- Parameters from arguments --#
     #eQ   = asmall*gs
     lamW = 4.*np.pi*fpi
-    mD   = bsmall*lamW
+    mD   = bsmall*lamW   
     
-    fsq  = fpi**2 
-#     pi3  = np.pi**3
-#     pi2  = np.pi**2
-#     eQsq = eQ**2
-#     gssq = gs**2     
+    #------------------------------------------------------------------------------------------------#
+    #-- Create Mass Squared Array of Pions And Get Interaction to Mass Basis Transformation Matrix --#
+    #------------------------------------------------------------------------------------------------#
+    # Note: M2 array is given in DM charge basis order
+    from calcPionMassSq import calcPionMassSq
+    if(Ngen==1):
+        # M2arr_DMcharge, M2arr_mass, M2DMarr 
+        M2, _, M2DMarr = calcPionMassSq(Ngen, CA, CG, CW, CZ, eQ, gs, sQsq, lamW, fpi, mD, kappa, DEBUG)
+    elif(Ngen==3):
+        # M2arr_DMcharge, M2arr_mass, M2DMarr, Wmatrix_mass
+        M2, _, M2DMarr, Wmatrix = calcPionMassSq(Ngen, CA, CG, CW, CZ, eQ, gs, sQsq, lamW, fpi, mD, kappa, DEBUG)
+    else:
+        print("Error: Invalid Ngen. Please use either Ngen=1 or Ngen=3.")
+        return    
     
     #-----------------------------------------------------------#
     #-- Load precalculated matrices if not passed to function --#
@@ -88,37 +95,26 @@ def omegaH2(Ngen, gs, fpi, kappa, eQ, bsmall, sQsq, F1HatMatrix=None, F2HatMatri
     elif(Ngen==3):
          
         #-- Transform from interaction to mass basis --#
-        from convertToMassBasis import calcMassTransformMatrix, convertToMassBasis
-        
-        # Calculate mass transformation matrix and perform transformation
-        Wmatrix = calcMassTransformMatrix(lamW, fpi, kappa, mD, Ngen, DEBUG)
+        from convertToMassBasis import convertToMassBasis
         F1HatMatrix_mass, F2HatMatrix_mass = convertToMassBasis(F1HatMatrix, F2HatMatrix, Wmatrix, Ngen, DEBUG)
         
         #-- Transform from mass to DM charge basis --#
-        from convertToDMBasis import calcDMTransformMatrix, convertToDMBasis
+        from convertToDMBasis import convertToDMBasis
         
         # Load pre-calculated DM transformation matrix and perform transformation
         Vmatrix = np.load(VmatrixFilename)[0]
-        F1HatMatrix_DMbasis, F2HatMatrix_DMbasis = convertToDMBasis(F1HatMatrix, F2HatMatrix, Vmatrix, DEBUG)
+        F1HatMatrix_DMbasis, F2HatMatrix_DMbasis = convertToDMBasis(F1HatMatrix_mass, F2HatMatrix_mass, Vmatrix, DEBUG)
 
     #---------------------------------------------------------------#
     #-- Calculate F1DMchargeBasisMatrix and F2DMchargeBasisMatrix --#
     #---------------------------------------------------------------#
+    fsq  = fpi**2 
     F1const = 4./fsq
     F2const = -2.*mD*(lamW*lamW*lamW)/(3*(fsq*fsq))
 
     F1DMchargeBasisMatrix = F1const*F1HatMatrix_DMbasis
     F2DMchargeBasisMatrix = F2const*F2HatMatrix_DMbasis
-        
-    #----------------------------------------#
-    #-- Create Mass Squared Array of Pions --#
-    #----------------------------------------#
-    from calcPionMassSq import calcPionMassSq
-    M2, _, M2DMarr = calcPionMassSq(Ngen, CA, CG, CW, CZ, eQ, gs, sQsq, lamW, fpi, mD, kappa, DEBUG)
-    #M2 = np.ones(M2.shape)#!
-    #M2DMarr = np.ones(M2DMarr.shape)#!
-    # Note need to redefine M2 to be returned as masses in DM charge basis
-    
+
     if (DEBUG):        
         print("Hyperparameter Settings:")
         print("Mass of DM (in GeV ?):          ", mD)
@@ -137,8 +133,9 @@ def omegaH2(Ngen, gs, fpi, kappa, eQ, bsmall, sQsq, F1HatMatrix=None, F2HatMatri
         print(M2DMarr)
         print("")
 
+    #--------------------#    
     #-- Calculate aeff --#
-    
+    #--------------------#  
     start = time.process_time()
     from coannihilation import calcSigma_ij, calcaEff
 
@@ -172,26 +169,29 @@ def omegaH2(Ngen, gs, fpi, kappa, eQ, bsmall, sQsq, F1HatMatrix=None, F2HatMatri
     from relicDMAbundance import calcOmegaH2
     
     m1 = np.sqrt(np.min(M2DMarr))
-    omegaH2, therm = calcOmegaH2(m1, mD, np.real(aeff))
-                    
-    end_paramScanTime = time.process_time()
+    if(M1AEFF):
+        return m1, aeff
+    else:    
+        omegaH2, therm = calcOmegaH2(m1, mD, np.real(aeff))
 
-    if(DEBUG):
-        print("Final omegaH2: ", omegaH2[-1])
-        print("")
-    
-    if (TIME):
-        print("------------------------------------------")
-        print("Single param calculation time: ", end_paramScanTime - start_paramScanTime)
-        print("")
-    
-    return omegaH2[-1], therm
+        end_paramScanTime = time.process_time()
+
+        if(DEBUG):
+            print("Final omegaH2: ", omegaH2[-1])
+            print("")
+
+        if (TIME):
+            print("------------------------------------------")
+            print("Single param calculation time: ", end_paramScanTime - start_paramScanTime)
+            print("")
+
+        return omegaH2[-1], therm
 
     
 if __name__ == "__main__":
     
     Ngen = int(sys.argv[1])
-    kwargs = { "gs":0.8, "fpi":155.*1000., "kappa":1.0, "asmall":0.625, "bsmall":0.01, "sQsq":0.3}
+    kwargs = { "gs":0.8, "fpi":155.*1000., "kappa":1.0, "eQ":0.5, "bsmall":0.01, "sQsq":0.3}
     oH2, _ = omegaH2(Ngen, **kwargs, DEBUG=DEBUG)
     print(oH2)
     
