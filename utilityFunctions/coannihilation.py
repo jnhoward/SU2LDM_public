@@ -27,10 +27,11 @@ def calcSigma_ij(M2, F1Mat, F2Mat, Ngen, aeff=True, DEBUG=True):
     
     sig = np.zeros((n, n), dtype=complex)    
     
-    allDM = itertools.product(DMindexlist, DMindexlist) 
-    # Note more efficient way if we account for the ij reaction symmetry <-- Maybe do this later #?
-
-    allSM = itertools.product(SMindexlist, SMindexlist)
+#     allDM = itertools.product(DMindexlist, DMindexlist) 
+#     # Note more efficient way if we account for the ij reaction symmetry <-- Maybe do this later #?
+#     allSM = itertools.product(SMindexlist, SMindexlist)
+    allDM = itertools.combinations_with_replacement(DMindexlist, r=2) # Accounts for symmetry in i,j
+    allSM = itertools.combinations_with_replacement(SMindexlist, r=2) # Accounts for symmetry in c,d
 
     total = itertools.product(allDM, allSM) # Need this step because nesting loops over itertools doesn't work
 
@@ -41,7 +42,13 @@ def calcSigma_ij(M2, F1Mat, F2Mat, Ngen, aeff=True, DEBUG=True):
     from crossSection import calcCrossSection
     if (aeff):
         for ((i,j),(c,d)) in total:
-            sig[i,j] += calcCrossSection(i, j, c, d, M2, F1Mat, F2Mat, DEBUG)
+            if c!=d:
+                cs = 2.*calcCrossSection(i, j, c, d, M2, F1Mat, F2Mat, DEBUG)
+            else:
+                cs = calcCrossSection(i, j, c, d, M2, F1Mat, F2Mat, DEBUG)
+            
+            sig[i,j] += cs
+            sig[j,i] = sig[i,j]
     else:
         print("Function not set up to handle aeff=False case.")
 
