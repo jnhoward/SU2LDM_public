@@ -9,7 +9,7 @@ def calcDiagramFactors(a, b, c, d, F1Mat, F2Mat):
     G5 = F1Mat[a, d, b, c] 
     G6 = F1Mat[b, c, a, d]
     G7 = F2Mat[a, b, c, d]
-  
+    
     return G1, G2, G3, G4, G5, G6, G7
 
 #-- Calculate components of cross section --#

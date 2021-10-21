@@ -132,7 +132,7 @@ def omegaH2(Ngen, gs, fpi, kappa, eQ, bsmall, sQsq, F1HatMatrix=None, F2HatMatri
         print("Mass Squared DM Array:          ")
         print(M2DMarr)
         print("")
-
+ 
     #--------------------#    
     #-- Calculate aeff --#
     #--------------------#  

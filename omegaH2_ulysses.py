@@ -48,8 +48,7 @@ class SU2LDM(ulysses.ULSBase):
             print("Error: %s does not exists. Please run preScan.py before proceeding."%FmatFilePath)
             os.abort()
         else:
-            self.F1HatDMchargeBasisMatrix, self.F2HatDMchargeBasisMatrix = np.load(FmatFilePath)
-   
+            self.F1HatMatrix, self.F2HatMatrix = np.load(FmatFilePath)   
 
     def setParams(self, pdict):
         """
@@ -89,6 +88,6 @@ class SU2LDM(ulysses.ULSBase):
         from omegaH2 import omegaH2
         
         oh2, _ = omegaH2(Ngen, gs, fpi, kappa, eQ, bsmall, sQsq, \
-                             self.F1HatDMchargeBasisMatrix, self.F2HatDMchargeBasisMatrix, DEBUG)
+                             self.F1HatMatrix, self.F2HatMatrix, DEBUG)
         
         return oh2
