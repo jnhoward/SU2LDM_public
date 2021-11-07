@@ -6,8 +6,8 @@ def calcDiagramFactors(a, b, c, d, F1Mat, F2Mat):
     G2 = F1Mat[d, b, c, a]
     G3 = F1Mat[c, d, a, b]
     G4 = F1Mat[a, c, b, d]
-    G5 = F1Mat[a, d, b, c] 
-    G6 = F1Mat[b, c, a, d]
+    G5 = F1Mat[a, d, c, b] #G5 = F1Mat[a, d, b, c] # Issue
+    G6 = F1Mat[c, b, a, d] #G6 = F1Mat[b, c, a, d] #Issue
     G7 = F2Mat[a, b, c, d]
     
     return G1, G2, G3, G4, G5, G6, G7

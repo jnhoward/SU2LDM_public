@@ -84,7 +84,7 @@ def calcDMTransformMatrix(Ngen, DEBUG=True):
         Vmatrix[b,d+1] = (0-1j)*normFactor
 
     Iarr = np.arange(Npions)
-    sans = np.concatenate((A, B, D))
+    sans = np.concatenate((A, B, D, D+1))
     Iarr = np.delete(Iarr, sans)
 
     for i in Iarr:

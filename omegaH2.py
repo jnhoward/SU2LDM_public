@@ -93,17 +93,25 @@ def omegaH2(Ngen, gs, fpi, kappa, eQ, bsmall, sQsq, F1HatMatrix=None, F2HatMatri
     if(Ngen==1):
         F1HatMatrix_DMbasis, F2HatMatrix_DMbasis = F1HatMatrix, F2HatMatrix
     elif(Ngen==3):
-         
-        #-- Transform from interaction to mass basis --#
-        from convertToMassBasis import convertToMassBasis
-        F1HatMatrix_mass, F2HatMatrix_mass = convertToMassBasis(F1HatMatrix, F2HatMatrix, Wmatrix, Ngen, DEBUG)
         
-        #-- Transform from mass to DM charge basis --#
-        from convertToDMBasis import convertToDMBasis
-        
-        # Load pre-calculated DM transformation matrix and perform transformation
+        #-- Transform from interaction to mass to DM charge basis in one go --#
         Vmatrix = np.load(VmatrixFilename)[0]
-        F1HatMatrix_DMbasis, F2HatMatrix_DMbasis = convertToDMBasis(F1HatMatrix_mass, F2HatMatrix_mass, Vmatrix, DEBUG)
+        WVmatrix = Wmatrix @ Vmatrix
+        
+        from transformFs import transformF
+        F1HatMatrix_DMbasis = transformF(WVmatrix, F1HatMatrix, DEBUG)
+        F2HatMatrix_DMbasis = transformF(WVmatrix, F2HatMatrix, DEBUG)
+
+#         #-- Transform from interaction to mass basis --#
+#         from convertToMassBasis import convertToMassBasis
+#         F1HatMatrix_mass, F2HatMatrix_mass = convertToMassBasis(F1HatMatrix, F2HatMatrix, Wmatrix, Ngen, DEBUG)
+        
+#         #-- Transform from mass to DM charge basis --#
+#         from convertToDMBasis import convertToDMBasis
+        
+#         # Load pre-calculated DM transformation matrix and perform transformation
+#         Vmatrix = np.load(VmatrixFilename)[0]
+#         F1HatMatrix_DMbasis, F2HatMatrix_DMbasis = convertToDMBasis(F1HatMatrix_mass, F2HatMatrix_mass, Vmatrix, DEBUG)
 
     #---------------------------------------------------------------#
     #-- Calculate F1DMchargeBasisMatrix and F2DMchargeBasisMatrix --#

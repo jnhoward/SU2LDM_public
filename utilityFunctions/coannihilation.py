@@ -8,6 +8,45 @@ import itertools
 #############################
 
 #-- Calculate sigma_ij (2D array) (assuming v=0) --#
+def calcSigma_ij_old(M2, F1Mat, F2Mat, Ngen, aeff=True, DEBUG=True):
+    # Calculates DM_i DM_j -> SM SM
+    # Sums over all possible SM states
+    if(Ngen==1):
+        n      = 15                        # Number of total pions (DM+SM)
+        DMindexlist = np.arange(8)+5       # Indices of DM charged pions in DM charge basis, 5 to 12 by definition
+        SMindexlist = np.delete(np.arange(n), DMindexlist) # Indices of SM charged pions in DM charge basis
+        SMindexlist = np.delete(SMindexlist, 0) # Ignore eta' (index 0) -> 1,2,3,4,13,14
+    elif(Ngen==3):
+        n      = 91                        # Number of total pions (DM+SM)
+        DMindexlist = np.arange(24)+1      # Indices of DM charged pions in DM charge basis, 1 to 24 by definition
+        SMindexlist = np.delete(np.arange(n), DMindexlist) # Indices of SM charged pions in DM charge basis
+        SMindexlist = np.delete(SMindexlist, 0) # Ignore eta' (index 0)
+    else:
+        print("Error: Invalid Ngen. Please use either Ngen=1 or Ngen=3.")
+        return         
+    
+    sig = np.zeros((n, n), dtype=complex)    
+    
+    allDM = itertools.product(DMindexlist, DMindexlist) 
+    # Note more efficient way if we account for the ij reaction symmetry <-- Maybe do this later #?
+    allSM = itertools.product(SMindexlist, SMindexlist)
+
+    total = itertools.product(allDM, allSM) # Need this step because nesting loops over itertools doesn't work
+
+    # Get masses of particles (not mass-squareds)
+    particleMasses = np.sqrt(M2)
+
+    #-- If we are calculating a_eff --# 
+    from crossSection import calcCrossSection
+    if (aeff):
+        for ((i,j),(c,d)) in total:           
+            sig[i,j] += calcCrossSection(i, j, c, d, M2, F1Mat, F2Mat, DEBUG)
+    else:
+        print("Function not set up to handle aeff=False case.")
+
+    return sig
+
+#-- Calculate sigma_ij (2D array) (assuming v=0) --#
 def calcSigma_ij(M2, F1Mat, F2Mat, Ngen, aeff=True, DEBUG=True):
     # Calculates DM_i DM_j -> SM SM
     # Sums over all possible SM states
@@ -31,7 +70,7 @@ def calcSigma_ij(M2, F1Mat, F2Mat, Ngen, aeff=True, DEBUG=True):
 #     # Note more efficient way if we account for the ij reaction symmetry <-- Maybe do this later #?
 #     allSM = itertools.product(SMindexlist, SMindexlist)
     allDM = itertools.combinations_with_replacement(DMindexlist, r=2) # Accounts for symmetry in i,j
-    allSM = itertools.combinations_with_replacement(SMindexlist, r=2) # Accounts for symmetry in c,d
+    allSM = itertools.product(SMindexlist, SMindexlist)
 
     total = itertools.product(allDM, allSM) # Need this step because nesting loops over itertools doesn't work
 
@@ -42,12 +81,12 @@ def calcSigma_ij(M2, F1Mat, F2Mat, Ngen, aeff=True, DEBUG=True):
     from crossSection import calcCrossSection
     if (aeff):
         for ((i,j),(c,d)) in total:
-            if c!=d:
-                cs = 2.*calcCrossSection(i, j, c, d, M2, F1Mat, F2Mat, DEBUG)
-            else:
-                cs = calcCrossSection(i, j, c, d, M2, F1Mat, F2Mat, DEBUG)
+#             if c!=d:
+#                 cs = 2.*calcCrossSection(i, j, c, d, M2, F1Mat, F2Mat, DEBUG)
+#             else:
+#                 cs = calcCrossSection(i, j, c, d, M2, F1Mat, F2Mat, DEBUG)
             
-            sig[i,j] += cs
+            sig[i,j] += calcCrossSection(i, j, c, d, M2, F1Mat, F2Mat, DEBUG)
             sig[j,i] = sig[i,j]
     else:
         print("Function not set up to handle aeff=False case.")
