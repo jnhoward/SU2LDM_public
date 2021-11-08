@@ -21,15 +21,25 @@ TIME  = False  # Turn off printing time statements
 ##
 ##  OR
 ##
-##  $ from omegah2 import omegaH2
+##  $ from omegaH2 import omegaH2
 ##  $ kwargs = { "Ngen": 1, "gs":0.8, "fpi":155.*1000., "kappa":1.0, "eQ":0.5, "bsmall":0.01, "sQsq":0.3}
 ##  $ omegaH2(**kwargs)
 ##
 ###################################################################################################
 
-def omegaH2(Ngen, gs, fpi, kappa, eQ, bsmall, sQsq, F1HatMatrix=None, F2HatMatrix=None, DEBUG=False, M1AEFF=False):
+def omegaH2(Ngen, gs, fpi, kappa, eQ, bsmall, sQsq, F1HatMatrix=None, F2HatMatrix=None, DEBUG=False, RETURN=None):
     
     start_paramScanTime = time.process_time()
+    
+    #---------------------------------------#
+    #-- Make sure RETURN flag makes sense --#
+    #---------------------------------------#
+    if RETURN not in [None,'m1_aeff','sigij']:
+        print("Error: Invalid RETURN option. Please use one of the following.")
+        print("     None: Will cause omegaH2 to return oh2, therm.") 
+        print("'m1_aeff': Will cause omegaH2 to return m1, aeff.")
+        print("  'sigij': Will cause omegaH2 to return sigij matrix.")
+        return
     
     #---------------------------------------#
     #-- Set overall setings based on Ngen --#
@@ -157,6 +167,9 @@ def omegaH2(Ngen, gs, fpi, kappa, eQ, bsmall, sQsq, F1HatMatrix=None, F2HatMatri
         print("Time elapsed: ", end - start)
         print("")
 
+    if RETURN =='sigij':
+        return sigij
+    
     # Calculate aeff
     start = time.process_time()
     aeff  = calcaEff(sigij, M2DMarr, garr, x, Ngen, DEBUG)
@@ -172,14 +185,16 @@ def omegaH2(Ngen, gs, fpi, kappa, eQ, bsmall, sQsq, F1HatMatrix=None, F2HatMatri
         print("Time elapsed: ", end - start)
         print("")
 
-        
+    #-----------------------#     
     #-- Calculate omegaH2 --#
+    #-----------------------#   
     from relicDMAbundance import calcOmegaH2
     
     m1 = np.sqrt(np.min(M2DMarr))
-    if(M1AEFF):
+    if RETURN == 'm1_aeff':
         return m1, aeff
-    else:    
+
+    if RETURN == None:
         omegaH2, therm = calcOmegaH2(m1, mD, np.real(aeff))
 
         end_paramScanTime = time.process_time()
@@ -200,6 +215,6 @@ if __name__ == "__main__":
     
     Ngen = int(sys.argv[1])
     kwargs = { "gs":0.8, "fpi":155.*1000., "kappa":1.0, "eQ":0.5, "bsmall":0.01, "sQsq":0.3}
-    oH2, _ = omegaH2(Ngen, **kwargs, DEBUG=DEBUG)
+    oH2, _ = omegaH2(Ngen, **kwargs, DEBUG=DEBUG, RETURN=None)
     print(oH2)
     

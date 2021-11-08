@@ -12,7 +12,7 @@ sys.path.append("utilityFunctions/")
 #-- Define default settings --#
 DEBUG = False  # Turn off DEBUG statements by default
 TIME  = False  # Turn off printing time statements
-Ngen  = 3      # Number of generations = 1
+Ngen  = 1      # Number of generations = 1
 
 class SU2LDM(ulysses.ULSBase):
 
