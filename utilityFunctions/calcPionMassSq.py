@@ -52,19 +52,48 @@ def calcUniqueVals(CA, CG, CW, CZ, eQ, gs, sQsq, lamW, fpi, mD, kappa, DEBUG=Tru
     fpiSq = fpi*fpi
     fpiMD = fpi*mD 
     
-    #-- Assuming BP1 --# #!
-    uV1  = 896.*(np.pi**2)*(fpiSq) + (128./7.)*(np.pi**3)*fpiMD
-    uV2  = -(128./7.)*(6**(1./2.))*(np.pi**3)*fpiMD
-    uV3  = 1.2944*(fpiSq)
-    uV4  = 0.706493*(fpiSq)
-    uV5  = 0.654401*(fpiSq)
-    uV6  = 0.64*(fpiSq)
-    uV7  = -0.64*(fpiSq)
-    uV8  = 64.*(np.pi**3)*fpiMD
-    uV9  = 0.390937*(fpiSq) + 64.*(np.pi**3)*fpiMD
-    uV10 = 2.56*(fpiSq)
-    uV11 = 0.978845*(fpiSq) + 64.*(np.pi**3)*fpiMD
-    uV12 = (768./7.)*(np.pi**3)*fpiMD
+    BP_params  = np.array([ gs,   eQ, sQsq])
+    BP1_params = np.array([0.8,  0.5,  0.3]) 
+    BP2_params = np.array([0.1, 0.01, 0.01])
+    
+    if(np.allclose(BP_params, BP1_params)):
+        #-- Assuming BP1 --#
+        uV1  = 896.*(np.pi**2)*(fpiSq) + (128./7.)*(np.pi**3)*fpiMD
+        uV2  = -(128./7.)*(6**(1./2.))*(np.pi**3)*fpiMD
+        uV3  = 1.2944*(fpiSq)
+        uV4  = 0.706493*(fpiSq)
+        uV5  = 0.654401*(fpiSq)
+        uV6  = 0.64*(fpiSq)
+        uV7  = -0.64*(fpiSq)
+        uV8  = 64.*(np.pi**3)*fpiMD
+        uV9  = 0.390937*(fpiSq) + 64.*(np.pi**3)*fpiMD
+        uV10 = 2.56*(fpiSq)
+        uV11 = 0.978845*(fpiSq) + 64.*(np.pi**3)*fpiMD
+        uV12 = (768./7.)*(np.pi**3)*fpiMD
+    elif(np.allclose(BP_params, BP2_params)):
+        #-- Assuming BP2 --#
+        uV1  = 896.*(np.pi**2)*(fpiSq) + (128./7.)*(np.pi**3)*fpiMD
+        uV2  = -(128./7.)*(6**(1./2.))*(np.pi**3)*fpiMD
+        uV3  = 0.200982e-1*(fpiSq)
+        uV4  = 0.662559e-2*(fpiSq)
+        uV5  = 0.100982e-1*(fpiSq)
+        uV6  = 0.1e-1*(fpiSq)
+        uV7  = -0.1e-1*(fpiSq)
+        uV8  = 64.*(np.pi**3)*fpiMD
+        uV9  = 0.134011e-3*(fpiSq) + 64.*(np.pi**3)*fpiMD
+        uV10 = 0.4e-1*(fpiSq)
+        uV11 = 0.134106e-1*(fpiSq) + 64.*(np.pi**3)*fpiMD
+        uV12 = (768./7.)*(np.pi**3)*fpiMD
+    else:
+        print("Error: Parameters gs, eQ, sQsq do not match those assumed by BP1 or BP2. Please check before rerunning.")
+        print("   gs, eQ, sQsq: ",gs, eQ, sQsq)
+        print("BP1: ")
+        print("   gs, eQ, sQsq: ",BP1_params[0], BP1_params[1], BP1_params[2])
+        print("BP2: ")
+        print("   gs, eQ, sQsq: ",BP2_params[0], BP2_params[1], BP2_params[2])
+        print("")
+        
+        return
 
     return np.array([uV1, uV2, uV3, uV4, uV5, uV6, uV7, uV8, uV9, uV10, uV11, uV12])
 
