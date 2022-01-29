@@ -58,12 +58,10 @@ def calcF1F2HatMatrices(X, A, Ngen=1, DEBUG=True):
         F2HatMatrix[a,b,c,d] = F2Hat(a, b, c, d, A, X)     
         
     
-    if (DEBUG):#! Make these more meaningful later
-        print("F1Matrix[7, 7, 2, 2] = ", F1HatMatrix[7, 7, 2, 2]) 
+    if (DEBUG):#! Make these meaningful later
         print("")
     
-    if (DEBUG):
-        print("F2Matrix[5, 1, 1, 5] = ", F2HatMatrix[5, 1, 1, 5])      
+    if (DEBUG): 
         print("") 
 
     return F1HatMatrix, F2HatMatrix

@@ -10,7 +10,6 @@ sys.path.append("utilityFunctions/")
 #-- Define default settings --#
 DEBUG = False  # Turn off DEBUG statements by default
 TIME  = False  # Turn off printing time statements
-#Ngen  = 1      # Number of generations = 1
 
 ###################################################################################################
 ##
@@ -68,7 +67,6 @@ def omegaH2(Ngen, gs, fpi, kappa, eQ, bsmall, sQsq, F1HatMatrix=None, F2HatMatri
     CW   =  1.
     
     #-- Parameters from arguments --#
-    #eQ   = asmall*gs
     lamW = 4.*np.pi*fpi
     mD   = bsmall*lamW   
     
@@ -114,17 +112,6 @@ def omegaH2(Ngen, gs, fpi, kappa, eQ, bsmall, sQsq, F1HatMatrix=None, F2HatMatri
         from transformFs import transformF
         F1HatMatrix_DMbasis = transformF(WVmatrix, F1HatMatrix, DEBUG)
         F2HatMatrix_DMbasis = transformF(WVmatrix, F2HatMatrix, DEBUG)
-
-#         #-- Transform from interaction to mass basis --#
-#         from convertToMassBasis import convertToMassBasis
-#         F1HatMatrix_mass, F2HatMatrix_mass = convertToMassBasis(F1HatMatrix, F2HatMatrix, Wmatrix, Ngen, DEBUG)
-        
-#         #-- Transform from mass to DM charge basis --#
-#         from convertToDMBasis import convertToDMBasis
-        
-#         # Load pre-calculated DM transformation matrix and perform transformation
-#         Vmatrix = np.load(VmatrixFilename)[0]
-#         F1HatMatrix_DMbasis, F2HatMatrix_DMbasis = convertToDMBasis(F1HatMatrix_mass, F2HatMatrix_mass, Vmatrix, DEBUG)
 
     #---------------------------------------------------------------#
     #-- Calculate F1DMchargeBasisMatrix and F2DMchargeBasisMatrix --#

@@ -75,7 +75,7 @@ def calcCrossSection(a, b, c, d, M2, F1Mat, F2Mat, DEBUG):
     else: 
         sig = (1./(32.*np.pi*massArr[a]*massArr[b]))*(np.sqrt(lam)/s)*(Cconst + Clin*W1val + Cquad*(W1val**2))
 
-    small_num = 1e-20 #! Impose lower threshold on value of sig #?
+    small_num = 1e-20 # Impose lower threshold on value of sig #?
     if (np.abs(sig) < small_num):
         return 0j
     else:

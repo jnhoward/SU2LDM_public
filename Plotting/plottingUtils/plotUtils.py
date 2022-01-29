@@ -147,8 +147,7 @@ def plotZcmap(plotArgs, X_cmap, Y_cmap, Z_cmap, contourDict=None, textDict=None)
         
         # Set them to specific values with option for minor ticks
         if subPlotArgDict['xticks'] != []:        
-            ax.set_xticks(subPlotArgDict['xticks'])
-#             ax.xaxis.get_ticklocs(minor=subPlotArgDict['xminorticks'])        
+            ax.set_xticks(subPlotArgDict['xticks']) 
         if subPlotArgDict['yticks'] != []:        
             ax.set_yticks(subPlotArgDict['yticks'])
         if subPlotArgDict['minorticks']:
@@ -222,6 +221,7 @@ def plotZcmap(plotArgs, X_cmap, Y_cmap, Z_cmap, contourDict=None, textDict=None)
     
     plt.show()
 
+    
 def plotHeatMap(x, y, data, mask=None, xlabel=r'${\rm log}_{10}(m_{\rm DM}/{\rm GeV})$', ylabel=r'${\rm log}_{10}(f/{\rm GeV})$', zlabel=r'$\sigma_{\rm eff} {\rm[ GeV^{-2}]}$', logZ=True):
 
     plt.figure(figsize=(8, 8))

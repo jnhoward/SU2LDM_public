@@ -2,7 +2,9 @@ import numpy as np
 from numpy import ma
 from scipy.optimize import bisect
 
-# See https://github.com/michaelhb/superplot/blob/master/superplot/statslib/two_dim.py
+# This code was modified slightly from superplot; some functionality was depreciated, so this filled in the blanks
+# URL to original code is below:
+# https://github.com/michaelhb/superplot/blob/master/superplot/statslib/two_dim.py
 
 def posterior_pdf(paramx, paramy, posterior, nbins=50, bin_limits=None):
     r"""

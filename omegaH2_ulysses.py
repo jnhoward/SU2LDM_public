@@ -58,7 +58,6 @@ class SU2LDM(ulysses.ULSBase):
         self.gs         = pdict["gs"]
         self.fpi        = pdict["fpi"]
         self.kappa      = pdict["kappa"]
-        #self.asmall     = pdict["asmall"]
         self.eQ         = pdict["eQ"]
         self.bsmall     = pdict["bsmall"]
         self.sQsq       = pdict["sQsq"]
@@ -79,7 +78,6 @@ class SU2LDM(ulysses.ULSBase):
         gs       = 10.**self.gs
         fpi      = 10.**self.fpi
         kappa    = 10.**self.kappa
-        #asmall   = 10.**self.asmall
         eQ       = 10.**self.eQ
         bsmall   = 10.**self.bsmall
         sQsq     = 10.**self.sQsq

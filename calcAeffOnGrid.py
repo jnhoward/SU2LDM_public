@@ -47,18 +47,18 @@ def calcAeffOnGrid(axisRange, gMesh, kwargs, AEFFPATH, CASE=4, COUNTER=10.):
             kwargs["bsmall"] = x/(4.*np.pi*kwargs["fpi"])
         elif CASE == 3:
             # x = mD GeV, y = fpi TeV
-            kwargs["fpi"]    = fpi*1000     # Convert to GeV
+            kwargs["fpi"]    = fpi*1000 # Convert to GeV
             kwargs["bsmall"] = x/(4.*np.pi*kwargs["fpi"])
         elif CASE ==4:
             # x = mD TeV, y = fpi TeV
-            mD               = x*1000  # Convert to GeV
-            kwargs["fpi"]    = y*1000     # Convert to GeV
+            mD               = x*1000 # Convert to GeV
+            kwargs["fpi"]    = y*1000 # Convert to GeV
             kwargs["bsmall"] = mD/(4.*np.pi*kwargs["fpi"])
         else:
             print("Error: Invalid CASE, select either 0,1,2,3, or 4.")
             return
 
-        m1, aeff = omegaH2(**kwargs, RETURN='m1_aeff') #calcM1Aeff(**kwargs) 
+        m1, aeff = omegaH2(**kwargs, RETURN='m1_aeff')
 
         m1List.append(m1)
         aeffList.append(aeff.real)

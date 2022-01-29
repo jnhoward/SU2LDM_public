@@ -13,7 +13,6 @@ def JacobianConvert2D(dfDict, CASE=1):
     """
     #-- Check that dfDict includes posterior, likelihood, fpi_pow, bsmall_pow
     if(~np.all([True for x in ['posterior', 'likelihood', 'fpi_pow', 'bsmall_pow'] if x in list(dfDict.keys())])):
-    #if(list(dfDict.keys()) != ['posterior', 'likelihood', 'fpi_pow', 'bsmall_pow']):
         print("Error: Incorrect dictionary format. Please make sure dictionary contains the following keys:")
         print("'posterior', 'likelihood', 'fpi_pow', 'bsmall_pow'")
         return
