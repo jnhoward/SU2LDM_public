@@ -21,7 +21,7 @@ TIME  = False  # Turn off printing time statements
 ##  OR
 ##
 ##  $ from omegaH2 import omegaH2
-##  $ kwargs = { "Ngen": 1, "gs":0.8, "fpi":155.*1000., "kappa":1.0, "eQ":0.5, "bsmall":0.01, "sQsq":0.3}
+##  $ kwargs = { 'Ngen': 1, 'gs': 0.8, 'eQ': 0.5, 'sQsq': 0.3, 'kappa': 1.0, 'fpi': 60000.0, 'bsmall': 0.006631455962162305}
 ##  $ omegaH2(**kwargs)
 ##
 ###################################################################################################
@@ -204,7 +204,7 @@ def omegaH2(Ngen, gs, fpi, kappa, eQ, bsmall, sQsq, F1HatMatrix=None, F2HatMatri
 if __name__ == "__main__":
     
     Ngen = int(sys.argv[1])
-    kwargs = { "gs":0.8, "fpi":155.*1000., "kappa":1.0, "eQ":0.5, "bsmall":0.01, "sQsq":0.3}
+    kwargs = {'gs': 0.8, 'eQ': 0.5, 'sQsq': 0.3, 'kappa': 1.0, 'fpi': 60000.0, 'bsmall': 0.006631455962162305}
     oH2, _ = omegaH2(Ngen, **kwargs, DEBUG=DEBUG, RETURN=None)
     print(oH2)
     
