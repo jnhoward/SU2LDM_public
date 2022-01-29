@@ -26,9 +26,9 @@ def preScan(Ngen, DEBUG=False):
 
     #-- Define filename based on Ngen --#
     if(Ngen==1):
-        filename = "npyFiles/FhatMatrices_DMBasis_Ngen1.npy"
+        filename = "Data/npyFiles/FhatMatrices_DMBasis_Ngen1.npy"
     elif(Ngen==3):
-        filename = "npyFiles/FhatMatrices_IntBasis_Ngen3.npy"
+        filename = "Data/npyFiles/FhatMatrices_IntBasis_Ngen3.npy"
     else:
         print("Error: Invalid Ngen. Please use either Ngen=1 or Ngen=3.")
         return         
@@ -110,7 +110,7 @@ def preScan(Ngen, DEBUG=False):
             # order of eigenvalues and vectors post diagonalization           
             from convertToDMBasis import calcDMTransformMatrix
             Vmatrix = calcDMTransformMatrix(Ngen, DEBUG)
-            np.save("npyFiles/VMatrix_massToDM_Ngen3.npy", [Vmatrix])
+            np.save("Data/npyFiles/VMatrix_massToDM_Ngen3.npy", [Vmatrix])
             
             # Save file
             np.save(filename, [F1HatMatrix, F2HatMatrix])

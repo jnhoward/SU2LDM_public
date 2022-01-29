@@ -34,7 +34,7 @@ def omegaH2(Ngen, gs, fpi, kappa, eQ, bsmall, sQsq, F1HatMatrix=None, F2HatMatri
     #---------------------------------------#
     #-- Make sure RETURN flag makes sense --#
     #---------------------------------------#
-    if RETURN not in [None,'m1_aeff','sigij']:
+    if RETURN not in [None,'M2_DMbasis','m1_aeff','sigij']:
         print("Error: Invalid RETURN option. Please use one of the following.")
         print("     None: Will cause omegaH2 to return oh2, therm.") 
         print("'m1_aeff': Will cause omegaH2 to return m1, aeff.")
@@ -45,11 +45,11 @@ def omegaH2(Ngen, gs, fpi, kappa, eQ, bsmall, sQsq, F1HatMatrix=None, F2HatMatri
     #-- Set overall setings based on Ngen --#
     #---------------------------------------#
     if(Ngen==1):
-        FhatFilename = "npyFiles/FhatMatrices_DMBasis_Ngen1.npy"
+        FhatFilename = "Data/npyFiles/FhatMatrices_DMBasis_Ngen1.npy"
         nDMPions     = 8  
     elif(Ngen==3):
-        FhatFilename    = "npyFiles/FhatMatrices_IntBasis_Ngen3.npy"
-        VmatrixFilename = "npyFiles/VMatrix_massToDM_Ngen3.npy"
+        FhatFilename    = "Data/npyFiles/FhatMatrices_IntBasis_Ngen3.npy"
+        VmatrixFilename = "Data/npyFiles/VMatrix_massToDM_Ngen3.npy"
         nDMPions        = 24
     else:
         print("Error: Invalid Ngen. Please use either Ngen=1 or Ngen=3.")
@@ -86,6 +86,9 @@ def omegaH2(Ngen, gs, fpi, kappa, eQ, bsmall, sQsq, F1HatMatrix=None, F2HatMatri
     else:
         print("Error: Invalid Ngen. Please use either Ngen=1 or Ngen=3.")
         return    
+    
+    if RETURN == 'M2_DMbasis':
+        return M2
     
     #-----------------------------------------------------------#
     #-- Load precalculated matrices if not passed to function --#

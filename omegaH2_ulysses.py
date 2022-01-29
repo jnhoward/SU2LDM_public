@@ -37,9 +37,9 @@ class SU2LDM(ulysses.ULSBase):
         #-- Load precalculated matrices --#
         #---------------------------------#
         if(Ngen==1):
-            FmatFilePath = "npyFiles/FhatMatrices_DMBasis_Ngen1.npy"
+            FmatFilePath = "Data/npyFiles/FhatMatrices_DMBasis_Ngen1.npy"
         elif(Ngen==3):
-            FmatFilePath = "npyFiles/FhatMatrices_IntBasis_Ngen3.npy"
+            FmatFilePath = "Data/npyFiles/FhatMatrices_IntBasis_Ngen3.npy"
         else:
             print("Error: Invalid Ngen. Please use either Ngen=1 or Ngen=3.")
             return     

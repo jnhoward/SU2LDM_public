@@ -137,7 +137,7 @@ def calcPionMassSq_3gen(CA, CG, CW, CZ, eQ, gs, sQsq, lamW, fpi, mD, kappa, DEBU
     M2arr_mass, Wmatrix_mass = LA.eig(M2_nondiag)
     
     #Convert to real type
-    assert np.all(M2arr_mass.imag == 0.)
+    assert np.allclose(M2arr_mass.imag, 0., rtol=0., atol=1e-2) #np.all(M2arr_mass.imag == 0.) #! Note change all asserts on floats to close
     M2arr_mass = M2arr_mass.real
     
     #-- Convert M2arr_mass to M2arr_DMcharge --#

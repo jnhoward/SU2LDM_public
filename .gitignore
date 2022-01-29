@@ -3,3 +3,8 @@ old_
 .DS_Store
 __pycache__/
 *.pyc
+pubCleanUp_
+Plotting/plottingUtils/pubCleanUp_
+Data/npyFiles/pubCleanUp_
+utilityFunctions/pubCleanUp_
+Data/ulyssesScanResults/old
