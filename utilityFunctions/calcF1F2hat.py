@@ -47,12 +47,13 @@ def calcF1F2HatMatrices(X, A, Ngen=1, DEBUG=True):
   
     dummyarr = np.arange(n) 
     
-    it = 0
+    it     = 0
+    nbatch = n
     for (a,b,c,d) in itertools.product(dummyarr, dummyarr, dummyarr, dummyarr):
         
         if(a == it):
             it+=1
-            print("Now processing: ",a,b,c,d)
+            print("Now processing batch %d out of %d"%(it, nbatch))
         
         F1HatMatrix[a,b,c,d] = F1Hat(a, b, c, d, X)
         F2HatMatrix[a,b,c,d] = F2Hat(a, b, c, d, A, X)     
