@@ -16,7 +16,7 @@ from scipy.special import kn
 
 #-- Constants --#
 c     = 299792.458         # Speed of light in km/s
-gamma = 0.1924500897298753 # Collapse factor #?
+gamma = 0.1924500897298753 # Collapse factor #? Add description later
 GCF   = 6.70883e-39        # Gravitational constant in GeV^-2
 mPL   = GCF**-0.5          # Planck mass in GeV
 v     = 174                # Higgs vev
@@ -25,7 +25,7 @@ GF    = 1.1663787e-5       # Fermi constant in GeV^-2
 
 #-- Conversion factors --#
 cm_in_invkeV = 5.067730938543699e7       # cm   in 1 keV^-1
-GeV_in_g     = 1.782661907e-24           # GeV  in 1 g #?
+GeV_in_g     = 1.782661907e-24           # GeV  in 1 g 
 Mpc_in_cm    = 3.085677581e24            # Mpc  in 1 cm
 year_in_s    = 3.168808781402895e-8      # year in 1 s
 GeV_in_invs  = cm_in_invkeV * c * 1.e11  # GeV  in 1 s^-1
@@ -35,10 +35,10 @@ GeV_in_invs  = cm_in_invkeV * c * 1.e11  # GeV  in 1 s^-1
 ##  Calculate g*(T) and g*S(T) interpolation  ##
 ##--------------------------------------------##
 
-# g*(T) is ... #?
-# g*S(T) is ... #?
+# g*(T) is ... #? Add description later
+# g*S(T) is ... #? Add description later
 
-#-- Read in g*(T) data and define an interpolated function of g*(T)--# #?
+#-- Read in g*(T) data and define an interpolated function of g*(T)--# 
 gTab = pd.read_table("./Data/gstar.dat",  names=['T','gstar'])
 
 Ttab = gTab.iloc[:,0]
@@ -47,7 +47,7 @@ tck  = interpolate.splrep(Ttab, gtab, s=0)
 
 def gstar(T): return interpolate.splev(T, tck, der=0)
 
-#-- Read in g*S(T) data and define an interpolated function of g*S(T) and its derivative w.r.t T --# #?
+#-- Read in g*S(T) data and define an interpolated function of g*S(T) and its derivative w.r.t T --# 
 gSTab = pd.read_table("./Data/gstarS.dat",  names=['T','gstarS'])
 
 TStab = gSTab.iloc[:,0]
@@ -59,16 +59,16 @@ def gstarS(T): return interpolate.splev(T, tckS, der = 0)
 def dgstarSdT(T): return interpolate.splev(T, tckS, der = 1)
 
 ##----------------------------##
-##  Define Boltzman equation  ##  #?
+##  Define Boltzman equation  ##  
 ##----------------------------##
 def FBEqs( a, v, nphi, mDM, sv):
     """ 
-    Calculate ... #?
+    Calculate ... #? Add description later
     
-    a:    #?
+    a:    #? Add description later
     v:    List of parameters rRAD, NDM, Tp. See definitions below.
     nphi: Initial photon number density
-    mDM:  Mass of the lightest DM pion #?
+    mDM:  Mass of the lightest DM pion 
     sv:   Coannihilation cross section
     """
     #-- Define Parameters --#
