@@ -56,25 +56,25 @@ There are two different cases (see the paper for details):
 2) The full model with 3 generations of standard model particle content (Ngen=3)
 
 
-#### Brief code descriptions:
+## Brief code descriptions:
 
-- preScan.py: Creates several data files containing large matrices which are used in the calculation. Run this first.
+#### preScan.py: Creates several data files containing large matrices which are used in the calculation. Run this first.
 
 Produces Data/npyFiles/FhatMatrices_DMBasis_Ngen1.npy in the Ngen=1 case. Produces Data/npyFiles/FhatMatrices_IntBasis_Ngen3.npy and Data/npyFiles/VMatrix_massToDM_Ngen3.npy in the Ngen=3 case. Note that Data/npyFiles/FhatMatrices_IntBasis_Ngen3.npy is too large to be stored directly on the GitHub repository so running preScan.py is required. Instructions for running preScan.py from the command line are in a comment at the top of the file.
 
-- omegaH2_ulysses.py: This is the main file which is used to interface with ulysses for the parameter scan.
+#### omegaH2_ulysses.py: This is the main file which is used to interface with ulysses for the parameter scan.
 
 This contains the class SU2LDM, with the property "EtaB" which returns the dark matter's omegaH2 value (oh2). The name "EtaB" is just to properly interface with ulysses. 
 
-- omegaH2.py: This is the file which does the heavy lifting in calculating oh2. 
+#### omegaH2.py: This is the file which does the heavy lifting in calculating oh2. 
 
 This relies on and coordinates functions contained in utilityFunctions/. 
 
-- calcAeffOnGrid.py: This runs omegaH2.py with special flags to pre-calculate the effective cross-section for a pre-selected grid of paramters.
+#### calcAeffOnGrid.py: This runs omegaH2.py with special flags to pre-calculate the effective cross-section for a pre-selected grid of paramters.
 
 The calculation code can take a while (several minutes per parameter point for Ngen=3). When plotting a grid of points is required. This code pre-calculates this grid and stores the results so they can be read-in when plotting as opposed to calculated in the plotting notebooks repeatedly. For more details, see the ipynb in Plotting/.
 
-- exampleNotebooks/calculationExamples_Ngen1and3.ipynb: Demonstrates how to calculate oh2. 
+#### exampleNotebooks/calculationExamples_Ngen1and3.ipynb: Demonstrates how to calculate oh2. 
 
 This serves as a check to make sure the workflow is functioning properly before running a scan. It also contains useful information regarding the physical meanings of the scan parameters. See the paper for more details.
 
@@ -83,14 +83,14 @@ This serves as a check to make sure the workflow is functioning properly before 
 
 # Example of how to run ulysses
 
-To run ulysses on a single test data point, run the following on the command line:
+#### To run ulysses on a single test data point, run the following on the command line:
 
 $ uls-calc -m omegaH2_ulysses.py:SU2LDM Data/test.dat
 
-To perform a 1D scan (example scans from 4.0 to 5.0 in fpi), run the following on the command line:
+#### To perform a 1D scan (example scans from 4.0 to 5.0 in fpi), run the following on the command line:
 
 $ uls-scan -m omegaH2_ulysses.py:SU2LDM Data/test_1Dscan.dat
 
-To perform a multi-dimensional scan (example scans from 4.0 to 5.0 in fpi and -3.0 to -2.0 in bsmall) using multinest as a backend, run the following on the command line:
+#### To perform a multi-dimensional scan (example scans from 4.0 to 5.0 in fpi and -3.0 to -2.0 in bsmall) using multinest as a backend, run the following on the command line:
 
 $ uls-nest -m omegaH2_ulysses.py:SU2LDM Data/test_multiDscan.dat
