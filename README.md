@@ -6,7 +6,7 @@ This repository contains the code used to produce the results and plots in the p
 
 Authors: Jessica N. Howard, Seyda Ipek, Tim M.P. Tait, Jessica Turner
 
-Paper link: https://arxiv.org/abs/2112.09152
+Paper e-print link: https://arxiv.org/abs/2112.09152
 
 
 
@@ -47,7 +47,9 @@ Paper link: https://arxiv.org/abs/2112.09152
 
 # Code Outline
 
-This code calculates the relic abundance of dark matter for the model contained in the paper. It is set up to interface with the software package ulysses which gives an efficient method for scanning the parameter space with a pymultinest backend. Below is a brief outline of the code; more thorough documentation will be added later. 
+This code calculates the relic abundance of dark matter for the model contained in the paper. It is set up to interface with the software package ULYSSES which gives an efficient method for scanning the parameter space with a pymultinest backend. See https://arxiv.org/abs/2007.09150 and https://github.com/earlyuniverse/ulysses.
+
+Below is a brief outline of the code; more thorough documentation will be added later. 
 
 There are two different cases (see the paper for details):
 
@@ -62,9 +64,9 @@ There are two different cases (see the paper for details):
 
 Produces Data/npyFiles/FhatMatrices_DMBasis_Ngen1.npy in the Ngen=1 case. Produces Data/npyFiles/FhatMatrices_IntBasis_Ngen3.npy and Data/npyFiles/VMatrix_massToDM_Ngen3.npy in the Ngen=3 case. Note that Data/npyFiles/FhatMatrices_IntBasis_Ngen3.npy is too large to be stored directly on the GitHub repository so running preScan.py is required. Instructions for running preScan.py from the command line are in a comment at the top of the file.
 
-#### omegaH2_ulysses.py: This is the main file which is used to interface with ulysses for the parameter scan.
+#### omegaH2_ulysses.py: This is the main file which is used to interface with ULYSSES for the parameter scan.
 
-This contains the class SU2LDM, with the property "EtaB" which returns the dark matter's omegaH2 value (oh2). The name "EtaB" is just to properly interface with ulysses. 
+This contains the class SU2LDM, with the property "EtaB" which returns the dark matter's omegaH2 value (oh2). The name "EtaB" is just to properly interface with ULYSSES. 
 
 #### omegaH2.py: This is the file which does the heavy lifting in calculating oh2. 
 
