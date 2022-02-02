@@ -2,3 +2,4 @@ ulysses
 jupyter
 numba
 pandas
+seaborn
