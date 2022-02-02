@@ -83,9 +83,9 @@ This serves as a check to make sure the workflow is functioning properly before 
 
 
 
-# Example of how to run ulysses
+# Example of how to run ULYSSES
 
-#### To run ulysses on a single test data point, run the following on the command line:
+#### To run ULYSSES on a single test data point, run the following on the command line:
 
 $ uls-calc -m omegaH2_ulysses.py:SU2LDM Data/test.dat
 
