@@ -1,5 +1,7 @@
 # SU2LDM_public
 
+![plot](Plotting/paperPlots/BP1_Ngen3_aeff_convUnits.pdf)
+
 This repository contains the code used to produce the results and plots in the paper: 
 
 "Dark Matter Freeze-out during ${\rm SU}(2)_{\rm L}$ Confinement" 
