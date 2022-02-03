@@ -37,7 +37,6 @@ Paper e-print link: https://arxiv.org/abs/2112.09152
     
     - ulysses==1.0.1
     - jupyter==1.0.0
-    - numba==0.53.1
     - pandas==1.1.5
     - seaborn==0.11.2
     
