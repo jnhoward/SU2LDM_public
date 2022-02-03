@@ -1,6 +1,6 @@
 # SU2LDM_public
 
-![plot](Plotting/paperPlots/BP1_Ngen3_aeff_convUnits.pdf)
+![plot](displayImage.png)
 
 This repository contains the code used to produce the results and plots in the paper: 
 
