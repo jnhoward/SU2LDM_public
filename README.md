@@ -1,21 +1,21 @@
-# SU2LDM_public
-
 ![plot](displayImage.png)
+
+# SU2LDM_public
 
 This repository contains the code used to produce the results and plots in the paper: 
 
-"Dark Matter Freeze-out during ${\rm SU}(2)_{\rm L}$ Confinement" 
+#### "Dark Matter Freeze-out during SU(2)_L Confinement" 
 
 Authors: Jessica N. Howard, Seyda Ipek, Tim M.P. Tait, Jessica Turner
 
 Paper e-print link: https://arxiv.org/abs/2112.09152
 
-
+Paper DOI: TBA
 
 
 # Software Environment Setup
 
-1. Make sure you have an anaconda3 installation with conda version 4.10.x (or newer). See https://docs.anaconda.com/anaconda/install/index.html. To check if you already have this installation, run the following on the command line and you should see similar outputs:
+1. Make sure you have an anaconda3 installation with conda version 4.10.x (or newer). See https://docs.anaconda.com/anaconda/install/index.html for details on how to install anaconda. To check if you already have this installation, run the following on the command line and you should see similar outputs:
     
     $ which conda
     
@@ -35,7 +35,7 @@ Paper e-print link: https://arxiv.org/abs/2112.09152
 
     $ pip install -r softwareRequirements/coreRequirements.txt
 
-    The main dependencies are listed in coreRequirements.txt. In order to avoid possible installation issues we have not listed their specific versions in coreRequirements.txt. However they are as follows:
+    The main package dependencies are listed in coreRequirements.txt. In order to avoid possible installation issues we have not listed their specific versions in coreRequirements.txt. However they are as follows:
     
     - ulysses==1.0.1
     - jupyter==1.0.0
@@ -48,7 +48,7 @@ Paper e-print link: https://arxiv.org/abs/2112.09152
 
 # Code Outline
 
-This code calculates the relic abundance of dark matter for the model contained in the paper. It is set up to interface with the software package ULYSSES which gives an efficient method for scanning the parameter space with a pymultinest backend. See https://arxiv.org/abs/2007.09150 and https://github.com/earlyuniverse/ulysses.
+This code calculates the relic abundance of dark matter for the model assumed in the paper. It is set up to interface with the software package ULYSSES which gives an efficient method for scanning the parameter space with a pymultinest backend. For more details on ULYSSES, see https://arxiv.org/abs/2007.09150 and https://github.com/earlyuniverse/ulysses.
 
 Below is a brief outline of the code; more thorough documentation will be added later. 
 
@@ -61,7 +61,7 @@ There are two different cases (see the paper for details):
 
 ## Brief code descriptions:
 
-#### preScan.py: Creates several data files containing large matrices which are used in the calculation. Run this first.
+#### preScan.py: Creates several data files containing large arrays which are used in the calculation. Run this first.
 
 Produces Data/npyFiles/FhatMatrices_DMBasis_Ngen1.npy in the Ngen=1 case. Produces Data/npyFiles/FhatMatrices_IntBasis_Ngen3.npy and Data/npyFiles/VMatrix_massToDM_Ngen3.npy in the Ngen=3 case. Note that Data/npyFiles/FhatMatrices_IntBasis_Ngen3.npy is too large to be stored directly on the GitHub repository so running preScan.py is required. Instructions for running preScan.py from the command line are in a comment at the top of the file.
 
@@ -71,11 +71,11 @@ This contains the class SU2LDM, with the property "EtaB" which returns the dark 
 
 #### omegaH2.py: This is the file which does the heavy lifting in calculating oh2. 
 
-This relies on and coordinates functions contained in utilityFunctions/. 
+This relies on functions contained in utilityFunctions/. 
 
 #### calcAeffOnGrid.py: This runs omegaH2.py with special flags to pre-calculate the effective cross-section for a pre-selected grid of paramters.
 
-The calculation code can take a while (several minutes per parameter point for Ngen=3). When plotting a grid of points is required. This code pre-calculates this grid and stores the results so they can be read-in when plotting as opposed to calculated in the plotting notebooks repeatedly. For more details, see the ipynb in Plotting/.
+The oh2 calculation code can take a while (several minutes per parameter point for Ngen=3). When making the final paper plots a grid of parameter points is required. This code pre-calculates this grid and stores the results so they can be read-in when plotting as opposed to calculated in the plotting notebooks repeatedly. For more details, see the .ipynb notebooks in Plotting/.
 
 #### exampleNotebooks/calculationExamples_Ngen1and3.ipynb: Demonstrates how to calculate oh2. 
 
