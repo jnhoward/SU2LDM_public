@@ -10,7 +10,14 @@ Authors: Jessica N. Howard, Seyda Ipek, Tim M.P. Tait, Jessica Turner
 
 Paper e-print link: https://arxiv.org/abs/2112.09152
 
-Paper DOI: TBA
+Paper DOI: 10.1007/JHEP02(2022)047
+
+
+# How to cite
+
+If you use this code, please cite the following DOI as well as the above paper:
+
+Code DOI: 10.5281/zenodo.5965537
 
 
 # Software Environment Setup
